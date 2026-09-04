@@ -26,13 +26,15 @@ Você vai precisar ter instalado em sua máquina as seguintes ferramentas:
 $ git clone https://github.com/Sabrinabreu/MindU-PI.git
 
 # Acesse a pasta do projeto
-$ cd MindU
+$ cd MindU-PI
 
 # Instale as dependências
 $ npm install
 
 # Execute a aplicação no modo desenvolvimento
 $ npm run dev
+
+$ acessar em http://localhost:5173/
 ```
 
 ---

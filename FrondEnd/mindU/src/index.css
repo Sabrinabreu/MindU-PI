@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+:root {
+  --text: #373545;
+  --text-h: #08060d;
+  --bg: #F8F8FC;
+  --border: #e5e4e7;
+  --code-bg: #ffffff;
+
+  --primary: #3D366D;
+  --primary-h: #2d2658;
+  --secondary: #683FE6;
+  --secondary-h: #4d29b8;
+  --accent: #8294EF;
+  --accent-h: #596cca;
+
+  --fontBody: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --fontHeading: 'Lora', Georgia, serif;
+
+  font: 18px/145% var(--fontBody);
+  letter-spacing: 0.18px;
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #BCBACA;
+    --text-h: #f3f4f6;
+    --bg: #030307;
+    --border: #2e303a;
+    --code-bg: #1f2028;
+
+    --primary: #9992C9;
+    --primary-h: #7870ac;
+    --secondary: #4319C2;
+    --secondary-h: #300f91;
+    --accent: #112279;
+    --accent-h: #0b195f;
+
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--fontBody);
+  font-size: 17px;
+}
+
+h1,
+h2 {
+  font-family: var(--fontHeading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 32px 0;
+  @media (max-width: 1024px) {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+}
+h2 {
+  font-size: 24px;
+  line-height: 118%;
+  letter-spacing: -0.24px;
+  margin: 0 0 8px;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+p {
+  margin: 0;
+}
