@@ -1,0 +1,155 @@
+.plans-section {
+  width: 100%;
+  padding: 5rem 1.5rem;
+}
+
+.plans-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.plans-header h2 {
+  font-family: var(--fontHeading);
+  font-size: 2.2rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+.plans-header p {
+  font-family: var(--fontBody);
+  color: var(--text-s);
+  font-size: 1.1rem;
+}
+
+.plans-container {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 2rem;
+}
+
+.plan-card {
+  flex: 1;
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Destaque para o plano Pro */
+.plan-card.popular {
+  border: 2px solid var(--accent, #6c5ce7);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.15);
+}
+
+.badge {
+  position: absolute;
+  top: -12px;
+  align-self: center;
+  background-color: var(--accent, #6c5ce7);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.plan-card h3 {
+  font-family: var(--fontHeading);
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.plan-price {
+  margin-bottom: 1rem;
+}
+
+.plan-price .price {
+  font-family: var(--fontHeading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.plan-price .period {
+  font-family: var(--fontBody);
+  color: var(--text-m);
+  font-size: 1rem;
+}
+
+.plan-description {
+  font-family: var(--fontBody);
+  color: var(--text-s);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  flex-grow: 1;
+}
+
+.plan-features li {
+  font-family: var(--fontBody);
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Botão secundário para os cards normais */
+.btn-plan {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: var(--fontBody);
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn-plan:hover {
+  background-color: #f0f0f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-plan:hover {
+    background-color: #292b36;
+  }
+}
+
+.plan-card .btn-primary {
+  text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+  .plans-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .plan-card {
+    width: 100%;
+    max-width: 400px;
+  }
+}

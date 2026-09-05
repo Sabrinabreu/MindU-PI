@@ -20,7 +20,7 @@ export function Header() {
         </button>
 
         <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <a href="#">Início</a>
+          <a href="">Início</a>
           <a href="#contato">Contato</a>
           <a href="#cadastro">Cadastro</a>
           <a href="#login" className="mobile-only">Login</a>

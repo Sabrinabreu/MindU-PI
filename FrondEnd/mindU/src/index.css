@@ -2,8 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 :root {
-  --text: #373545;
-  --text-h: #08060d;
+  --text: #494949;
+  --text-s: #666666;
+  --text-m: #888888;
   --bg: #F8F8FC;
   --border: #e5e4e7;
   --code-bg: #ffffff;
@@ -32,7 +33,8 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #BCBACA;
-    --text-h: #f3f4f6;
+     --text-s: #9c91a7;
+    --text-m: #7e7685;
     --bg: #030307;
     --border: #2e303a;
     --code-bg: #1f2028;
