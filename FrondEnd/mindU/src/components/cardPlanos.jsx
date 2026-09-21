@@ -43,8 +43,8 @@ export function SessaoPlanos() {
   ];
 
   return (
-    <section className="plans-section" id="planos">
-      <div className="plans-header">
+    <section className="sectionIndex" id="planos">
+      <div className="sectionHeader">
         <h2>Nossos Planos</h2>
         <p>Escolha a opção ideal para impulsionar suas metas</p>
       </div>

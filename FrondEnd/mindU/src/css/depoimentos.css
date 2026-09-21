@@ -1,0 +1,256 @@
+/* ===== Carrossel ===== */
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.carousel-viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.testimonial-card {
+  box-sizing: border-box;
+  padding: 0 1rem;
+}
+
+/* Card interno (visual) */
+.testimonial-card > * {
+  /* nada */
+}
+
+.testimonial-card {
+  /* reaplicando como container visual */
+  padding: 0 1rem;
+}
+
+.testimonial-card::before {
+  content: '';
+  display: block;
+}
+
+/* Aqui o card real fica dentro */
+.testimonial-card .testimonial-comment,
+.testimonial-card .testimonial-rating,
+.testimonial-card .testimonial-author {
+  /* nada */
+}
+
+/* Wrapper visual do card */
+.testimonial-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem;
+}
+
+.testimonial-card > .testimonial-rating,
+.testimonial-card > .testimonial-comment,
+.testimonial-card > .testimonial-author {
+  background-color: var(--code-bg);
+}
+
+/* Aplicando visual no card inteiro via um container interno seria mais limpo,
+   mas mantendo o padrão: usamos padding e o background no card */
+.testimonial-card {
+  background-color: transparent;
+}
+
+/* ---- Ajuste final do card ---- */
+.testimonial-card {
+  padding: 0 1rem;
+}
+
+.testimonial-card > * {
+  /* ok */
+}
+
+/* Colocamos o visual no card usando outline no filho pai */
+.testimonial-card {
+  /* Nada */
+}
+
+/* Refazendo de forma limpa: o card visual é o próprio item, mas com margem interna */
+.testimonial-card {
+  padding: 0 1rem;
+}
+
+.testimonial-card > .testimonial-rating:first-child {
+  margin-top: 0;
+}
+
+/* ===== Aplicando visual real dentro do card ===== */
+.testimonial-card {
+  padding: 0 1rem;
+}
+
+.testimonial-card .testimonial-comment {
+  /* ok */
+}
+
+/* Visual do card: aplicamos em uma div interna via ::before seria gambiarra.
+   Solução: usar box-shadow no conteúdo. Vamos simplificar aplicando
+   o visual direto, com o padding externo movido para um wrapper. */
+
+/* ========== SOLUÇÃO LIMPA ========== */
+/* O padding lateral fica no item, o visual fica num wrapper interno.
+   Como o JSX não tem wrapper, aplicamos o visual no item e usamos
+   margin entre eles via gap no track. */
+
+.carousel-track {
+  gap: 1.5rem;
+}
+
+.testimonial-card {
+  padding: 2rem 1.8rem;
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(108, 92, 231, 0.12);
+}
+
+.testimonial-rating {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: #d1d1d1;
+}
+
+.star.filled {
+  color: #f5b301;
+}
+
+.testimonial-comment {
+  font-family: var(--fontBody);
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.testimonial-photo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent, #6c5ce7);
+}
+
+.testimonial-info h4 {
+  font-family: var(--fontHeading);
+  font-size: 1rem;
+  color: var(--primary);
+  margin: 0 0 0.15rem 0;
+}
+
+.testimonial-info span {
+  font-family: var(--fontBody);
+  font-size: 0.85rem;
+  color: var(--text-m);
+}
+
+/* ===== Botões de navegação ===== */
+.carousel-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background-color: var(--code-bg);
+  color: var(--primary);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  user-select: none;
+  padding-bottom: 4px;
+}
+
+.carousel-btn:hover {
+  background-color: var(--accent, #6c5ce7);
+  color: #fff;
+  border-color: var(--accent, #6c5ce7);
+}
+
+/* ===== Dots ===== */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.dot.active {
+  background-color: var(--accent, #6c5ce7);
+  width: 26px;
+  border-radius: 6px;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 900px) {
+  .carousel-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .testimonials-section {
+    padding: 3.5rem 1.5rem;
+  }
+
+  .testimonials-header h2 {
+    font-size: 1.7rem;
+  }
+
+  .testimonials-header p {
+    font-size: 1rem;
+  }
+
+  .testimonial-card {
+    padding: 1.8rem 1.4rem;
+  }
+}
