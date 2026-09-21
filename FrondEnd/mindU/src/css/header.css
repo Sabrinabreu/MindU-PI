@@ -1,6 +1,18 @@
+/* ===== Variáveis exclusivas da seção Benefícios ===== */
+.site-header {
+  --bgHeader: #3D366D;
+}
+
+@media (prefers-color-scheme: dark) {
+  .site-header {
+    --bgHeader: #1f2028;
+  }
+}
+
+
 .site-header {
   width: 100%;
-  background-color: var(--primary);
+  background-color: var(--bgHeader);
   position: sticky;
   top: 0;
   z-index: 1000;

@@ -1,17 +1,21 @@
 /* ===== Variáveis exclusivas do Footer ===== */
 .footer {
-  --text-Footer: #cfcfe7;
+  --bgHeader: #3D366D;
+  --textFooter: #fbf5f5;
+  --tittleFooter: #9992C9;
 }
 
 @media (prefers-color-scheme: dark) {
   .footer {
-    --text-Footer: #1f2028;
+    --bgHeader: #1f2028;
+    --textFooter: #c4c1cb;
+    --tittleFooter: #9992C9;
   }
 }
 
 .footer {
   width: 100%;
-  background-color: var(--primary);
+  background-color: var(--bgHeader);
   border-top: 1px solid var(--border);
   padding: 4rem 1.5rem 0;
   margin-top: 4rem;
@@ -31,7 +35,7 @@
 .footer-col h4 {
   font-family: var(--fontHeading);
   font-size: 1.05rem;
-  color: #b7beec;
+  color: var(--tittleFooter);
   margin-bottom: 1.2rem;
   position: relative;
 }
@@ -41,7 +45,7 @@
   display: block;
   width: 32px;
   height: 2px;
-  background-color: var(--accent, #6c5ce7);
+  background-color: var(--tittleFooter);
   margin-top: 0.5rem;
   border-radius: 2px;
 }
@@ -57,14 +61,14 @@
 
 .footer-col ul a {
   font-family: var(--fontBody);
-  color: var(--text-Footer);
+  color: var(--textFooter);
   text-decoration: none;
   font-size: 0.95rem;
   transition: color 0.2s ease, padding-left 0.2s ease;
 }
 
 .footer-col ul a:hover {
-  color: var(--accent, #6c5ce7);
+  color: var(--tittleFooter);
   padding-left: 4px;
 }
 
@@ -77,14 +81,14 @@
 .footer-logo {
   font-family: var(--fontHeading);
   font-size: 1.8rem;
-  color: var(--accent);
+  color: var(--tittleFooter);
   margin-bottom: 0.8rem;
   letter-spacing: -0.02em;
 }
 
 .footer-tagline {
   font-family: var(--fontBody);
-  color: var(--text-Footer);
+  color: var(--textFooter);
   font-size: 0.95rem;
   line-height: 1.6;
   margin-bottom: 1.5rem;
@@ -105,13 +109,12 @@
   height: 40px;
   border-radius: 50%;
   background-color:  rgba(108, 92, 231, 0.12);
-  color: var(--accent, #6c5ce7);
   text-decoration: none;
   transition: all 0.2s ease;
+  color: var(--tittleFooter);
 }
 
 .footer-social-link:hover {
-  background-color: var(--accent, #6c5ce7);
   color: #fff;
   transform: translateY(-3px);
 }
@@ -126,14 +129,13 @@
   align-items: center;
   gap: 0.6rem;
   font-family: var(--fontBody);
-  color: var(--text-Footer);
+  color: var(--textFooter);
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
 .footer-contact .material-symbols-outlined {
   font-size: 18px;
-  color: var(--accent, #6c5ce7);
   flex-shrink: 0;
 }
 
@@ -153,7 +155,7 @@
 
 .footer-bottom p {
   font-family: var(--fontBody);
-  color: var(--text-Footer);
+  color: var(--textFooter);
   font-size: 0.85rem;
   margin: 0;
 }
@@ -166,14 +168,10 @@
 
 .footer-bottom-links a {
   font-family: var(--fontBody);
-  color: var(--text-Footer);
+  color: var(--textFooter);
   font-size: 0.85rem;
   text-decoration: none;
   transition: color 0.2s ease;
-}
-
-.footer-bottom-links a:hover {
-  color: var(--accent, #6c5ce7);
 }
 
 .footer-bottom-links span {
