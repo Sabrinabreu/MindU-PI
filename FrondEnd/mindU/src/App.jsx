@@ -1,17 +1,19 @@
-import { useState } from 'react'
 import './App.css'
+import { Routes, Route } from 'react-router-dom'
 import { Header } from './header'
 import { Home } from './page/home'
+import { Cadastro } from './page/cadastro'
 import { Footer } from './components/footer'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-    <Header/>
-    <Home/>
-    <Footer/>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/cadastro" element={<Cadastro />} />
+      </Routes>
+      <Footer />
     </>
   )
 }

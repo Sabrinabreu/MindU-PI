@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import './css/header.css'
+import { Link, useLocation } from 'react-router-dom';
+import './css/header.css';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header className="site-header">
       <div className="header-container">
 
-        <a href="/" className="logo">MindU</a>
+        <Link to="/" className="logo" onClick={closeMenu}>MindU</Link>
 
         {/* Botão Mobile */}
-        <button 
-          className="menu-toggle" 
+        <button
+          className="menu-toggle"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle Menu"
         >
@@ -20,16 +24,21 @@ export function Header() {
         </button>
 
         <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <a href="">Início</a>
-          <a href="#contato">Contato</a>
-          <a href="#cadastro">Cadastro</a>
-          <a href="#login" className="mobile-only">Login</a>
+          <Link to="/" onClick={closeMenu}>Início</Link>
+
+          <Link to="/#contato" onClick={closeMenu}>Contato</Link>
+
+          <Link to="/cadastro" onClick={closeMenu}>Cadastro</Link>
+
+          <Link to="/login" className="mobile-only" onClick={closeMenu}>
+            Login
+          </Link>
         </nav>
 
         <div className="header-actions">
-          <a href="#login" className="btn-primary">Login</a>
+          <Link to="/login" className="btn-primary">Login</Link>
         </div>
-        
+
       </div>
     </header>
   );

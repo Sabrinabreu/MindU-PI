@@ -1,0 +1,24 @@
+/* Checkbox de "atender presencialmente" */
+.switch-endereco {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--fontBody);
+  font-size: 0.95rem;
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.switch-endereco input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent, #6c5ce7);
+  cursor: pointer;
+}
+
+@media (prefers-color-scheme: dark) {
+  .switch-endereco {
+    color: #ece7ff;
+  }
+}
