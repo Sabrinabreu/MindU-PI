@@ -21,7 +21,7 @@ export function CadastroBeneficiario({ onBack }) {
   };
 
   return (
-    <form className="cadastro-form" onSubmit={handleSubmit}>
+    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
       <button type="button" className="btn-voltar" onClick={onBack}>
         <span className="material-symbols-outlined">arrow_back</span>
         Voltar
@@ -36,6 +36,7 @@ export function CadastroBeneficiario({ onBack }) {
         <div className="form-field full">
           <label>Nome completo *</label>
           <input
+            className="glass-input"
             type="text"
             name="nome"
             value={form.nome}
@@ -48,6 +49,7 @@ export function CadastroBeneficiario({ onBack }) {
         <div className="form-field full">
           <label>E-mail corporativo *</label>
           <input
+            className="glass-input"
             type="email"
             name="emailCorporativo"
             value={form.emailCorporativo}
@@ -60,6 +62,7 @@ export function CadastroBeneficiario({ onBack }) {
         <div className="form-field">
           <label>Empresa vinculada *</label>
           <select
+            className="glass-input"
             name="empresa"
             value={form.empresa}
             onChange={handleChange}
@@ -77,6 +80,7 @@ export function CadastroBeneficiario({ onBack }) {
         <div className="form-field">
           <label>Matrícula *</label>
           <input
+            className="glass-input"
             type="text"
             name="matricula"
             value={form.matricula}
@@ -88,8 +92,9 @@ export function CadastroBeneficiario({ onBack }) {
         </div>
 
         <div className="form-field full">
-          <label>Senha de acesso *</label>
+          <label>Senha *</label>
           <input
+            className="glass-input"
             type="password"
             name="senha"
             value={form.senha}
@@ -101,7 +106,7 @@ export function CadastroBeneficiario({ onBack }) {
         </div>
       </div>
 
-      <button type="submit" className="btn-submit">
+      <button type="submit" className="btn-gradient">
         Criar minha conta
       </button>
     </form>

@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './css/header.css';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
@@ -14,7 +12,6 @@ export function Header() {
 
         <Link to="/" className="logo" onClick={closeMenu}>MindU</Link>
 
-        {/* Botão Mobile */}
         <button
           className="menu-toggle"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -26,7 +23,7 @@ export function Header() {
         <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <Link to="/" onClick={closeMenu}>Início</Link>
 
-          <Link to="/#contato" onClick={closeMenu}>Contato</Link>
+          <Link to="/contato" onClick={closeMenu}>Contato</Link>
 
           <Link to="/cadastro" onClick={closeMenu}>Cadastro</Link>
 

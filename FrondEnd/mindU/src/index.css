@@ -19,6 +19,34 @@
   --fontBody: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --fontHeading: 'Lora', Georgia, serif;
 
+
+  --gradient-brand: linear-gradient(135deg, #7c5cff, #5b3ddf);
+  --gradient-brand-hover: linear-gradient(135deg, #8b6dff, #6c5ce7);
+  --gradient-shadow: 0 10px 25px rgba(108, 92, 231, 0.5);
+  --gradient-shadow-hover: 0 14px 32px rgba(108, 92, 231, 0.65);
+
+
+   /* ===== Glass design ===== */
+  --glass-bg: rgba(220, 215, 245, 0.15);
+  --glass-bg-hover: rgba(220, 215, 245, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.28);
+  --glass-blur: blur(5px) saturate(160%);
+
+  --glass-input-bg: rgba(255, 255, 255, 0.08);
+  --glass-input-bg-focus: rgba(255, 255, 255, 0.14);
+  --glass-input-border: rgba(200, 150, 220, 0.55);
+  --glass-input-border-focus: rgba(180, 140, 255, 0.95);
+  --glass-input-ring: rgba(180, 140, 255, 0.18);
+
+  --glass-shadow: 0 25px 60px rgba(20, 15, 60, 0.35);
+  --glass-shadow-lg: 0 25px 60px rgba(20, 15, 60, 0.4);
+  --glass-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+
+  --glass-text: #ffffff;
+  --glass-text-soft: rgba(255, 255, 255, 0.75);
+  --glass-text-mute: rgba(255, 255, 255, 0.55);
+
+
   font: 18px/145% var(--fontBody);
   letter-spacing: 0.18px;
   color-scheme: light dark;
@@ -131,4 +159,115 @@ p {
     'wght' 500,
     'GRAD' 0,
     'opsz' 24;
+}
+
+
+
+/* Card de vidro */
+.glass-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow), var(--glass-shadow-inset);
+  color: var(--glass-text);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.glass-card:hover {
+  background: var(--glass-bg-hover);
+  box-shadow: var(--glass-shadow-lg);
+}
+
+/* Input de vidro */
+.glass-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem 1.2rem;
+  font-family: var(--fontBody);
+  font-size: 0.9rem;
+  color: var(--glass-text);
+  background: var(--glass-input-bg);
+  border: 1.5px solid var(--glass-input-border);
+  border-radius: 100px;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-input::placeholder {
+  color: var(--glass-text-mute);
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: var(--glass-input-border-focus);
+  background: var(--glass-input-bg-focus);
+  box-shadow: 0 0 0 4px var(--glass-input-ring);
+}
+
+/* Ícone em círculo de vidro */
+.glass-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--glass-text);
+  font-size: 2.4rem;
+}
+
+/* Botão gradiente geral */
+.btn-gradient {
+  padding: 0.9rem 1.5rem;
+  background: var(--gradient-brand);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: var(--fontBody);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--gradient-shadow);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn-gradient:hover {
+  background: var(--gradient-brand-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--gradient-shadow-hover);
+}
+
+.btn-gradient:active {
+  transform: translateY(0);
+}
+
+
+/* Chip/pílula com estado ativo */
+.glass-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--glass-input-border);
+  border-radius: 100px;
+  font-family: var(--fontBody);
+  font-size: 0.85rem;
+  color: var(--glass-text-soft);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.glass-chip:hover {
+  border-color: var(--glass-input-border-focus);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.glass-chip.active {
+  background: var(--gradient-brand);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(108, 92, 231, 0.45);
 }

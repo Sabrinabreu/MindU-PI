@@ -7,7 +7,7 @@ export function CadastroProfissional({ onBack }) {
     dataNascimento: '',
     sexo: '',
     telefone: '',
-    // Endereço (opcional — pode atender só online)
+    // Endereço (opcional)
     cep: '',
     logradouro: '',
     numero: '',
@@ -61,7 +61,7 @@ export function CadastroProfissional({ onBack }) {
   };
 
   return (
-    <form className="cadastro-form" onSubmit={handleSubmit}>
+    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
       <button type="button" className="btn-voltar" onClick={onBack}>
         <span className="material-symbols-outlined">arrow_back</span>
         Voltar
@@ -76,6 +76,7 @@ export function CadastroProfissional({ onBack }) {
         <div className="form-field full">
           <label>Nome completo *</label>
           <input
+            className="glass-input"
             type="text"
             name="nome"
             value={form.nome}
@@ -88,6 +89,7 @@ export function CadastroProfissional({ onBack }) {
         <div className="form-field full">
           <label>E-mail profissional *</label>
           <input
+            className="glass-input"
             type="email"
             name="email"
             value={form.email}
@@ -100,6 +102,7 @@ export function CadastroProfissional({ onBack }) {
         <div className="form-field">
           <label>Data de nascimento *</label>
           <input
+            className="glass-input"
             type="date"
             name="dataNascimento"
             value={form.dataNascimento}
@@ -111,6 +114,7 @@ export function CadastroProfissional({ onBack }) {
         <div className="form-field">
           <label>Sexo *</label>
           <select
+            className="glass-input"
             name="sexo"
             value={form.sexo}
             onChange={handleChange}
@@ -127,6 +131,7 @@ export function CadastroProfissional({ onBack }) {
         <div className="form-field full">
           <label>Telefone *</label>
           <input
+            className="glass-input"
             type="tel"
             name="telefone"
             value={form.telefone}
@@ -146,9 +151,7 @@ export function CadastroProfissional({ onBack }) {
             />
             <span>Vou atender presencialmente (preencher endereço)</span>
           </label>
-          <small>
-            Se você atende apenas online, pode pular esta parte.
-          </small>
+          <small>Se você atende apenas online, pode pular esta parte.</small>
         </div>
 
         {preencherEndereco && (
@@ -156,6 +159,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field">
               <label>CEP</label>
               <input
+                className="glass-input"
                 type="text"
                 name="cep"
                 value={form.cep}
@@ -170,6 +174,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field">
               <label>Cidade</label>
               <input
+                className="glass-input"
                 type="text"
                 name="cidade"
                 value={form.cidade}
@@ -180,6 +185,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field full">
               <label>Logradouro</label>
               <input
+                className="glass-input"
                 type="text"
                 name="logradouro"
                 value={form.logradouro}
@@ -191,6 +197,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field">
               <label>Número</label>
               <input
+                className="glass-input"
                 type="text"
                 name="numero"
                 value={form.numero}
@@ -202,6 +209,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field">
               <label>Complemento</label>
               <input
+                className="glass-input"
                 type="text"
                 name="complemento"
                 value={form.complemento}
@@ -213,6 +221,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field">
               <label>Bairro</label>
               <input
+                className="glass-input"
                 type="text"
                 name="bairro"
                 value={form.bairro}
@@ -223,6 +232,7 @@ export function CadastroProfissional({ onBack }) {
             <div className="form-field">
               <label>Estado</label>
               <input
+                className="glass-input"
                 type="text"
                 name="estado"
                 value={form.estado}
@@ -235,8 +245,9 @@ export function CadastroProfissional({ onBack }) {
         )}
 
         <div className="form-field full">
-          <label>Senha de acesso *</label>
+          <label>Senha *</label>
           <input
+            className="glass-input"
             type="password"
             name="senha"
             value={form.senha}
@@ -248,7 +259,7 @@ export function CadastroProfissional({ onBack }) {
         </div>
       </div>
 
-      <button type="submit" className="btn-submit">
+      <button type="submit" className="btn-gradient">
         Enviar cadastro para análise
       </button>
 

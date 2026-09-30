@@ -27,7 +27,6 @@ export function CadastroEmpresarial({ onBack }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Busca endereço pelo CEP (ViaCEP)
   const handleCepBlur = async (e) => {
     const cep = e.target.value.replace(/\D/g, '');
     if (cep.length !== 8) return;
@@ -63,7 +62,7 @@ export function CadastroEmpresarial({ onBack }) {
   };
 
   return (
-    <form className="cadastro-form" onSubmit={handleSubmit}>
+    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
       <button type="button" className="btn-voltar" onClick={onBack}>
         <span className="material-symbols-outlined">arrow_back</span>
         Voltar
@@ -79,6 +78,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field full">
           <label>Razão social *</label>
           <input
+            className="glass-input"
             type="text"
             name="razaoSocial"
             value={form.razaoSocial}
@@ -91,6 +91,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Nome fantasia *</label>
           <input
+            className="glass-input"
             type="text"
             name="nomeFantasia"
             value={form.nomeFantasia}
@@ -103,6 +104,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Inscrição estadual</label>
           <input
+            className="glass-input"
             type="text"
             name="inscricaoEstadual"
             value={form.inscricaoEstadual}
@@ -114,6 +116,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>CNPJ *</label>
           <input
+            className="glass-input"
             type="text"
             name="cnpj"
             value={form.cnpj}
@@ -126,6 +129,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Responsável *</label>
           <input
+            className="glass-input"
             type="text"
             name="responsavel"
             value={form.responsavel}
@@ -139,6 +143,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>CEP *</label>
           <input
+            className="glass-input"
             type="text"
             name="cep"
             value={form.cep}
@@ -154,6 +159,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Cidade *</label>
           <input
+            className="glass-input"
             type="text"
             name="cidade"
             value={form.cidade}
@@ -165,6 +171,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field full">
           <label>Logradouro *</label>
           <input
+            className="glass-input"
             type="text"
             name="logradouro"
             value={form.logradouro}
@@ -177,6 +184,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Número *</label>
           <input
+            className="glass-input"
             type="text"
             name="numero"
             value={form.numero}
@@ -189,6 +197,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Complemento</label>
           <input
+            className="glass-input"
             type="text"
             name="complemento"
             value={form.complemento}
@@ -200,6 +209,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Bairro *</label>
           <input
+            className="glass-input"
             type="text"
             name="bairro"
             value={form.bairro}
@@ -211,6 +221,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Estado *</label>
           <input
+            className="glass-input"
             type="text"
             name="estado"
             value={form.estado}
@@ -225,6 +236,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>E-mail *</label>
           <input
+            className="glass-input"
             type="email"
             name="email"
             value={form.email}
@@ -237,6 +249,7 @@ export function CadastroEmpresarial({ onBack }) {
         <div className="form-field">
           <label>Telefone *</label>
           <input
+            className="glass-input"
             type="tel"
             name="telefone"
             value={form.telefone}
@@ -251,27 +264,18 @@ export function CadastroEmpresarial({ onBack }) {
           <label>Plano de interesse *</label>
           <div className="planos-opcoes">
             {['Essencial', 'Pro', 'Corporativo', 'Ainda não sei'].map((p) => (
-              <label
-                key={p}
-                className={`plano-chip ${form.plano === p ? 'active' : ''}`}
+              <label key={p} className={`plano-chip glass-chip ${ form.plano === p ? 'active' : '' }`}
               >
-                <input
-                  type="radio"
-                  name="plano"
-                  value={p}
-                  checked={form.plano === p}
-                  onChange={handleChange}
-                />
-                {p}
-              </label>
+                <input type="radio" name="plano" value={p} checked={form.plano === p} onChange={handleChange} /> {p}</label>
             ))}
           </div>
         </div>
 
         {/* ===== Senha ===== */}
         <div className="form-field full">
-          <label>Senha de acesso *</label>
+          <label>Senha *</label>
           <input
+            className="glass-input"
             type="password"
             name="senha"
             value={form.senha}
@@ -283,7 +287,7 @@ export function CadastroEmpresarial({ onBack }) {
         </div>
       </div>
 
-      <button type="submit" className="btn-submit">
+      <button type="submit" className="btn-gradient">
         Solicitar proposta
       </button>
     </form>

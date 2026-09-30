@@ -43,7 +43,7 @@ export function Cadastro() {
 
   return (
     <div className="cadastro-page">
-      <div className="cadastro-bg" />
+      <div className="cadastro-bg"/>
 
       <div className="cadastro-content">
         {!tipo ? (
@@ -55,12 +55,8 @@ export function Cadastro() {
 
             <div className="cadastro-tipos">
               {tipos.map((t) => (
-                <button
-                  key={t.id}
-                  className="tipo-card"
-                  onClick={() => setTipo(t.id)}
-                >
-                  <span className="material-symbols-outlined tipo-icon">
+                <button key={t.id} className="tipo-card glass-card" onClick={() => setTipo(t.id)}>
+                  <span className="material-symbols-outlined tipo-icon glass-icon">
                     {t.icon}
                   </span>
                   <h3>{t.titulo}</h3>
