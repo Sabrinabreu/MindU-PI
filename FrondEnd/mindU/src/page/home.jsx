@@ -4,7 +4,7 @@ import { SessaoPlanos } from '../components/cardPlanos'
 import { PorQueMindU } from '../components/cardBeneficios'
 import { Depoimentos } from '../components/depoimentos'
 
-function Home() {
+export function Home() {
   const [count, setCount] = useState(0)
 
   return (
