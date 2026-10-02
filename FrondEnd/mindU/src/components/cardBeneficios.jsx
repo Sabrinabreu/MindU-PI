@@ -38,10 +38,8 @@ export function PorQueMindU() {
 
       <div className="cardBenef-container">
         {benefits.map((benefit, index) => (
-          <div key={index} className="cardBenef-card">
-            <div className="cardBenef-icon">
-              <span className="material-symbols-outlined">{benefit.icon}</span>
-            </div>
+          <div key={index} className="cardBenef-card glass-card">
+            <span className="material-symbols-outlined cardBenef-icon glass-icon">{benefit.icon}</span>
             <h3>{benefit.title}</h3>
             <p>{benefit.description}</p>
           </div>

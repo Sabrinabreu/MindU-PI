@@ -1,11 +1,13 @@
 import './App.css'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Header } from './header'
 import { Home } from './page/home'
 import { Cadastro } from './page/cadastro'
 import { Footer } from './components/footer'
 
 function App() {
+  const location = useLocation();
+
   return (
     <>
       <Header />
@@ -13,7 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/cadastro" element={<Cadastro />} />
       </Routes>
-      <Footer />
+      {location.pathname !== '/cadastro' && <Footer />}
     </>
   )
 }

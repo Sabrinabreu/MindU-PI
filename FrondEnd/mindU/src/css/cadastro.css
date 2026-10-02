@@ -11,7 +11,7 @@
 .cadastro-bg {
   position: absolute;
   inset: 0;
-  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80');
+  background-image: url('../assets/cadastroBG.avif');
   background-position: center;
 }
 
@@ -28,19 +28,14 @@
   max-width: 1300px;
 }
 
-.cadastro-page:has(.cadastro-form) {
-  justify-content: flex-end;
-}
-
 .cadastro-page:has(.cadastro-form) .cadastro-content {
-  justify-content: flex-end;
-  max-width: 100%;
+  justify-items: center;
 }
 
 /* ===== FORMULÁRIO ===== */
 .cadastro-form {
   width: 100%;
-  max-width: 420px;
+  max-width: 470px;
   padding: 3rem 2.4rem 2.4rem;
   border-radius: 28px;
 }
@@ -121,7 +116,7 @@
   padding-left: 0.3rem;
 }
 
-/* Select herda o input mas precisa do ícone custom */
+/* Inputs */
 .form-field select {
   appearance: none;
   cursor: pointer;
@@ -146,7 +141,7 @@
   color-scheme: dark;
 }
 
-/* Botão de envio usa .btn-gradient — só adicionamos margem */
+/* botão */
 .cadastro-form .btn-gradient {
   width: 100%;
   margin-top: 1.4rem;
@@ -170,7 +165,7 @@
   gap: 1.5rem;
 }
 
-/* Cada tipo é um glass-card; ajustamos só o layout interno */
+/* Cards */
 .tipo-card {
   padding: 2.5rem 1.5rem;
   display: flex;
@@ -202,7 +197,6 @@
   line-height: 1.4;
 }
 
-/* Chips de plano usam .glass-chip — só margem/cursor */
 .plano-chip input {
   display: none;
 }

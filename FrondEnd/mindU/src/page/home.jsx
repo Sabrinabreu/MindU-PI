@@ -3,6 +3,7 @@ import { About } from '../components/quemSomos'
 import { SessaoPlanos } from '../components/cardPlanos'
 import { PorQueMindU } from '../components/cardBeneficios'
 import { Depoimentos } from '../components/depoimentos'
+import '../index.css';
 
 export function Home() {
   const [count, setCount] = useState(0)
