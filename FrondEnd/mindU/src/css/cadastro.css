@@ -35,13 +35,25 @@
 /* ===== FORMULÁRIO ===== */
 .cadastro-form {
   width: 100%;
-  max-width: 470px;
   padding: 3rem 2.4rem 2.4rem;
   border-radius: 28px;
+  transition: max-width 0.3s ease;
 }
-.cadastro-form:hover {
-  background: var(--glass-bg);
-  box-shadow: var(--glass-shadow), var(--glass-shadow-inset);
+
+/* Ajusta o tamanho do card conforme a quantidade de colunas */
+.cadastro-form.cols-1 {
+  max-width: 480px;
+}
+
+.cadastro-form.cols-2 {
+  max-width: 650px;
+}
+
+.cadastro-form {
+  width: 100%;
+  max-width: 650px; 
+  padding: 3rem 2.4rem 2.4rem;
+  border-radius: 28px;
 }
 
 .cadastro-form h2 {
@@ -91,15 +103,37 @@
 
 /* Grid de campos */
 .form-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 1rem;
+}
+
+/* 1 Coluna (para etapas com até 6 campos) */
+.form-grid.cols-1 {
+  grid-template-columns: 1fr;
+}
+
+/* 2 Colunas (para etapas com mais de 6 campos) */
+.form-grid.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  grid-column: span 1; 
+}
+
+/* Elementos de largura total quando estiver em 2 colunas */
+.form-grid.cols-2 .form-field.full,
+.form-grid.cols-2 .btn-gradient.full {
+  grid-column: span 2;
+}
+
+.planos-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .form-field label {
@@ -146,6 +180,25 @@
   width: 100%;
   margin-top: 1.4rem;
 }
+
+
+/* Responsividade */
+@media (max-width: 580px) {
+  .cadastro-form.cols-1,
+  .cadastro-form.cols-2 {
+    max-width: 470px;
+  }
+  
+  .form-grid.cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid.cols-2 .form-field.full,
+  .form-grid.cols-2 .btn-gradient.full {
+    grid-column: span 1;
+  }
+}
+
 
 /* ===== TELA DE ESCOLHA ===== */
 .cadastro-header {

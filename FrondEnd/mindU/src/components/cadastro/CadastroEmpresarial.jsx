@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+
+const PLANOS_OPCOES = ['Essencial', 'Pro', 'Corporativo', 'Ainda não sei'];
+
+const INITIAL_FORM_STATE = {
+  // Etapa 1: Dados da Empresa
+  razaoSocial: '',
+  nomeFantasia: '',
+  inscricaoEstadual: '',
+  cnpj: '',
+  responsavel: '',
+
+  // Etapa 2: Endereço e Contato
+  cep: '',
+  cidade: '',
+  logradouro: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  estado: '',
+  email: '',
+  telefone: '',
+  plano: '',
+  senha: '',
+};
 
 export function CadastroEmpresarial({ onBack }) {
   const [etapa, setEtapa] = useState(1);
-  const [form, setForm] = useState({
-    razaoSocial: '',
-    nomeFantasia: '',
-    inscricaoEstadual: '',
-    cnpj: '',
-    responsavel: '',
-    cep: '',
-    logradouro: '',
-    numero: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    estado: '',
-    email: '',
-    telefone: '',
-    plano: '',
-    senha: '',
-  });
-
+  const [form, setForm] = useState(INITIAL_FORM_STATE);
   const [buscandoCep, setBuscandoCep] = useState(false);
+
+  const camposEtapas = useMemo(() => ({
+    1: ['razaoSocial', 'nomeFantasia', 'inscricaoEstadual', 'cnpj', 'responsavel'],
+    2: ['cep', 'cidade', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'email', 'telefone', 'plano', 'senha'],
+  }), []);
+
+  const totalCamposEtapaAtual = camposEtapas[etapa].length;
+  const isSingleColumn = totalCamposEtapaAtual <= 6;
+  const gridClass = isSingleColumn ? 'cols-1' : 'cols-2';
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,12 +44,12 @@ export function CadastroEmpresarial({ onBack }) {
   };
 
   const handleCepBlur = async (e) => {
-    const cep = e.target.value.replace(/\D/g, '');
-    if (cep.length !== 8) return;
+    const cepLimpo = e.target.value.replace(/\D/g, '');
+    if (cepLimpo.length !== 8) return;
 
     setBuscandoCep(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
       const data = await res.json();
 
       if (data.erro) {
@@ -58,7 +73,6 @@ export function CadastroEmpresarial({ onBack }) {
 
   const handleNextStep = (e) => {
     e.preventDefault();
-    // Valida os campos do formulário pertencentes à Etapa 1
     const formElement = e.target.closest('form');
     if (formElement.checkValidity()) {
       setEtapa(2);
@@ -77,14 +91,19 @@ export function CadastroEmpresarial({ onBack }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Cadastro Empresarial:', form);
-    // TODO: enviar para API
+    console.log('Cadastro Empresarial Enviado:', form);
+    // TODO: Integração com API
   };
 
   return (
-    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
-      <button type="button" className="btn-voltar" onClick={handleBackStep}>
-        <span className="material-symbols-outlined">arrow_back</span>
+    <form className={`cadastro-form glass-card ${gridClass}`} onSubmit={handleSubmit}>
+      <button 
+        type="button" 
+        className="btn-voltar" 
+        onClick={handleBackStep}
+        aria-label="Voltar para etapa anterior"
+      >
+        <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         Voltar
       </button>
 
@@ -95,13 +114,14 @@ export function CadastroEmpresarial({ onBack }) {
           : 'Preencha o endereço e dados de contato.'}
       </p>
 
-      <div className="form-grid">
+      <div className={`form-grid ${gridClass}`}>
         {/* ================= ETAPA 1 ================= */}
         {etapa === 1 && (
           <>
-            <div className="form-field full">
-              <label>Razão social *</label>
+            <div className="form-field">
+              <label htmlFor="razaoSocial">Razão social *</label>
               <input
+                id="razaoSocial"
                 className="glass-input"
                 type="text"
                 name="razaoSocial"
@@ -113,8 +133,9 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>Nome fantasia *</label>
+              <label htmlFor="nomeFantasia">Nome fantasia *</label>
               <input
+                id="nomeFantasia"
                 className="glass-input"
                 type="text"
                 name="nomeFantasia"
@@ -126,8 +147,9 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>Inscrição estadual</label>
+              <label htmlFor="inscricaoEstadual">Inscrição estadual</label>
               <input
+                id="inscricaoEstadual"
                 className="glass-input"
                 type="text"
                 name="inscricaoEstadual"
@@ -138,8 +160,9 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>CNPJ *</label>
+              <label htmlFor="cnpj">CNPJ *</label>
               <input
+                id="cnpj"
                 className="glass-input"
                 type="text"
                 name="cnpj"
@@ -150,22 +173,24 @@ export function CadastroEmpresarial({ onBack }) {
               />
             </div>
 
-            <div className="form-field full">
-              <label>Responsável *</label>
+            <div className="form-field">
+              <label htmlFor="responsavel">Responsável *</label>
               <input
+                id="responsavel"
                 className="glass-input"
                 type="text"
                 name="responsavel"
                 value={form.responsavel}
                 onChange={handleChange}
                 placeholder="Ex: Carlos Mendes"
+                autoComplete="name"
                 required
               />
             </div>
 
             <button
               type="button"
-              className="btn-gradient full"
+              className="btn-gradient"
               onClick={handleNextStep}
             >
               Continuar
@@ -173,13 +198,13 @@ export function CadastroEmpresarial({ onBack }) {
           </>
         )}
 
-        {/* ================= ETAPA 2 ================= */}
+        {/* ================= ETAPA 2 (cols 2) ================= */}
         {etapa === 2 && (
           <>
-            {/* Endereço */}
             <div className="form-field">
-              <label>CEP *</label>
+              <label htmlFor="cep">CEP *</label>
               <input
+                id="cep"
                 className="glass-input"
                 type="text"
                 name="cep"
@@ -188,39 +213,45 @@ export function CadastroEmpresarial({ onBack }) {
                 onBlur={handleCepBlur}
                 placeholder="00000-000"
                 maxLength={9}
+                autoComplete="postal-code"
                 required
               />
               {buscandoCep && <small>Buscando endereço...</small>}
             </div>
 
             <div className="form-field">
-              <label>Cidade *</label>
+              <label htmlFor="cidade">Cidade *</label>
               <input
+                id="cidade"
                 className="glass-input"
                 type="text"
                 name="cidade"
                 value={form.cidade}
                 onChange={handleChange}
+                autoComplete="address-level2"
                 required
               />
             </div>
 
             <div className="form-field full">
-              <label>Logradouro *</label>
+              <label htmlFor="logradouro">Logradouro *</label>
               <input
+                id="logradouro"
                 className="glass-input"
                 type="text"
                 name="logradouro"
                 value={form.logradouro}
                 onChange={handleChange}
                 placeholder="Rua, Avenida..."
+                autoComplete="address-line1"
                 required
               />
             </div>
 
             <div className="form-field">
-              <label>Número *</label>
+              <label htmlFor="numero">Número *</label>
               <input
+                id="numero"
                 className="glass-input"
                 type="text"
                 name="numero"
@@ -232,20 +263,23 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>Complemento</label>
+              <label htmlFor="complemento">Complemento</label>
               <input
+                id="complemento"
                 className="glass-input"
                 type="text"
                 name="complemento"
                 value={form.complemento}
                 onChange={handleChange}
                 placeholder="Sala, andar..."
+                autoComplete="address-line2"
               />
             </div>
 
             <div className="form-field">
-              <label>Bairro *</label>
+              <label htmlFor="bairro">Bairro *</label>
               <input
+                id="bairro"
                 className="glass-input"
                 type="text"
                 name="bairro"
@@ -256,8 +290,9 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>Estado *</label>
+              <label htmlFor="estado">Estado *</label>
               <input
+                id="estado"
                 className="glass-input"
                 type="text"
                 name="estado"
@@ -265,65 +300,69 @@ export function CadastroEmpresarial({ onBack }) {
                 onChange={handleChange}
                 placeholder="SP"
                 maxLength={2}
+                autoComplete="address-level1"
                 required
               />
             </div>
 
-            {/* Contato */}
             <div className="form-field">
-              <label>E-mail *</label>
+              <label htmlFor="email">E-mail *</label>
               <input
+                id="email"
                 className="glass-input"
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="contato@empresa.com.br"
+                autoComplete="email"
                 required
               />
             </div>
 
             <div className="form-field">
-              <label>Telefone *</label>
+              <label htmlFor="telefone">Telefone *</label>
               <input
+                id="telefone"
                 className="glass-input"
                 type="tel"
                 name="telefone"
                 value={form.telefone}
                 onChange={handleChange}
                 placeholder="(11) 4000-0000"
+                autoComplete="tel"
                 required
               />
             </div>
 
-            {/* Plano */}
             <div className="form-field full">
               <label>Plano de interesse *</label>
               <div className="planos-opcoes">
-                {['Essencial', 'Pro', 'Corporativo', 'Ainda não sei'].map((p) => (
+                {PLANOS_OPCOES.map((planoNome) => (
                   <label
-                    key={p}
+                    key={planoNome}
                     className={`plano-chip glass-chip ${
-                      form.plano === p ? 'active' : ''
+                      form.plano === planoNome ? 'active' : ''
                     }`}
                   >
                     <input
                       type="radio"
                       name="plano"
-                      value={p}
-                      checked={form.plano === p}
+                      value={planoNome}
+                      checked={form.plano === planoNome}
                       onChange={handleChange}
-                    />{' '}
-                    {p}
+                      required
+                    />
+                    {planoNome}
                   </label>
                 ))}
               </div>
             </div>
 
-            {/* Senha */}
             <div className="form-field full">
-              <label>Senha *</label>
+              <label htmlFor="senha">Senha *</label>
               <input
+                id="senha"
                 className="glass-input"
                 type="password"
                 name="senha"
@@ -331,6 +370,7 @@ export function CadastroEmpresarial({ onBack }) {
                 onChange={handleChange}
                 placeholder="Mínimo 8 caracteres"
                 minLength={8}
+                autoComplete="new-password"
                 required
               />
             </div>
