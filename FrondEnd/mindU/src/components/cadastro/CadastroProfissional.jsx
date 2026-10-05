@@ -1,25 +1,30 @@
 import React, { useState } from 'react';
 
-export function CadastroProfissional({ onBack }) {
-  const [form, setForm] = useState({
-    nome: '',
-    email: '',
-    dataNascimento: '',
-    sexo: '',
-    telefone: '',
-    // Endereço (opcional)
-    cep: '',
-    logradouro: '',
-    numero: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    estado: '',
-    senha: '',
-  });
+const INITIAL_FORM_STATE = {
+  nome: '',
+  email: '',
+  dataNascimento: '',
+  sexo: '',
+  telefone: '',
+  cep: '',
+  logradouro: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  cidade: '',
+  estado: '',
+  senha: '',
+};
 
+const CAMPOS_OBRIGATORIOS = [
+  'nome', 'email', 'dataNascimento', 'sexo', 'telefone', 'senha',
+];
+
+export function CadastroProfissional({ onBack }) {
+  const [form, setForm] = useState(INITIAL_FORM_STATE);
   const [buscandoCep, setBuscandoCep] = useState(false);
   const [preencherEndereco, setPreencherEndereco] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,12 +32,12 @@ export function CadastroProfissional({ onBack }) {
   };
 
   const handleCepBlur = async (e) => {
-    const cep = e.target.value.replace(/\D/g, '');
-    if (cep.length !== 8) return;
+    const cepLimpo = e.target.value.replace(/\D/g, '');
+    if (cepLimpo.length !== 8) return;
 
     setBuscandoCep(true);
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
       const data = await res.json();
 
       if (data.erro) {
@@ -57,13 +62,18 @@ export function CadastroProfissional({ onBack }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Cadastro Profissional:', form);
-    // TODO: enviar para API
+    // TODO: Integração com API
   };
 
   return (
     <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
-      <button type="button" className="btn-voltar" onClick={onBack}>
-        <span className="material-symbols-outlined">arrow_back</span>
+      <button
+        type="button"
+        className="btn-voltar"
+        onClick={onBack}
+        aria-label="Voltar para a página anterior"
+      >
+        <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         Voltar
       </button>
 
@@ -72,36 +82,41 @@ export function CadastroProfissional({ onBack }) {
         Junte-se ao time de especialistas que transformam a saúde mental no trabalho.
       </p>
 
-      <div className="form-grid">
+      <div className="form-grid  cols-2">
         <div className="form-field full">
-          <label>Nome completo *</label>
+          <label htmlFor="nome">Nome completo *</label>
           <input
+            id="nome"
             className="glass-input"
             type="text"
             name="nome"
             value={form.nome}
             onChange={handleChange}
             placeholder="Ex: Dra. Camila Ribeiro"
+            autoComplete="name"
             required
           />
         </div>
 
         <div className="form-field full">
-          <label>E-mail profissional *</label>
+          <label htmlFor="email">E-mail profissional *</label>
           <input
+            id="email"
             className="glass-input"
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
             placeholder="voce@email.com"
+            autoComplete="email"
             required
           />
         </div>
 
         <div className="form-field">
-          <label>Data de nascimento *</label>
+          <label htmlFor="dataNascimento">Data de nascimento *</label>
           <input
+            id="dataNascimento"
             className="glass-input"
             type="date"
             name="dataNascimento"
@@ -112,15 +127,16 @@ export function CadastroProfissional({ onBack }) {
         </div>
 
         <div className="form-field">
-          <label>Sexo *</label>
+          <label htmlFor="sexo">Sexo *</label>
           <select
+            id="sexo"
             className="glass-input"
             name="sexo"
             value={form.sexo}
             onChange={handleChange}
             required
           >
-            <option value="">Selecione</option>
+            <option value="" disabled>Selecione</option>
             <option value="feminino">Feminino</option>
             <option value="masculino">Masculino</option>
             <option value="outro">Outro</option>
@@ -129,14 +145,16 @@ export function CadastroProfissional({ onBack }) {
         </div>
 
         <div className="form-field full">
-          <label>Telefone *</label>
+          <label htmlFor="telefone">Telefone *</label>
           <input
+            id="telefone"
             className="glass-input"
             type="tel"
             name="telefone"
             value={form.telefone}
             onChange={handleChange}
             placeholder="(11) 90000-0000"
+            autoComplete="tel"
             required
           />
         </div>
@@ -157,8 +175,9 @@ export function CadastroProfissional({ onBack }) {
         {preencherEndereco && (
           <>
             <div className="form-field">
-              <label>CEP</label>
+              <label htmlFor="cep">CEP</label>
               <input
+                id="cep"
                 className="glass-input"
                 type="text"
                 name="cep"
@@ -167,36 +186,42 @@ export function CadastroProfissional({ onBack }) {
                 onBlur={handleCepBlur}
                 placeholder="00000-000"
                 maxLength={9}
+                autoComplete="postal-code"
               />
               {buscandoCep && <small>Buscando endereço...</small>}
             </div>
 
             <div className="form-field">
-              <label>Cidade</label>
+              <label htmlFor="cidade">Cidade</label>
               <input
+                id="cidade"
                 className="glass-input"
                 type="text"
                 name="cidade"
                 value={form.cidade}
                 onChange={handleChange}
+                autoComplete="address-level2"
               />
             </div>
 
             <div className="form-field full">
-              <label>Logradouro</label>
+              <label htmlFor="logradouro">Logradouro</label>
               <input
+                id="logradouro"
                 className="glass-input"
                 type="text"
                 name="logradouro"
                 value={form.logradouro}
                 onChange={handleChange}
                 placeholder="Rua, Avenida..."
+                autoComplete="address-line1"
               />
             </div>
 
             <div className="form-field">
-              <label>Número</label>
+              <label htmlFor="numero">Número</label>
               <input
+                id="numero"
                 className="glass-input"
                 type="text"
                 name="numero"
@@ -207,20 +232,23 @@ export function CadastroProfissional({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>Complemento</label>
+              <label htmlFor="complemento">Complemento</label>
               <input
+                id="complemento"
                 className="glass-input"
                 type="text"
                 name="complemento"
                 value={form.complemento}
                 onChange={handleChange}
                 placeholder="Sala, andar..."
+                autoComplete="address-line2"
               />
             </div>
 
             <div className="form-field">
-              <label>Bairro</label>
+              <label htmlFor="bairro">Bairro</label>
               <input
+                id="bairro"
                 className="glass-input"
                 type="text"
                 name="bairro"
@@ -230,8 +258,9 @@ export function CadastroProfissional({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label>Estado</label>
+              <label htmlFor="estado">Estado</label>
               <input
+                id="estado"
                 className="glass-input"
                 type="text"
                 name="estado"
@@ -239,23 +268,38 @@ export function CadastroProfissional({ onBack }) {
                 onChange={handleChange}
                 placeholder="SP"
                 maxLength={2}
+                autoComplete="address-level1"
               />
             </div>
           </>
         )}
 
         <div className="form-field full">
-          <label>Senha *</label>
-          <input
-            className="glass-input"
-            type="password"
-            name="senha"
-            value={form.senha}
-            onChange={handleChange}
-            placeholder="Mínimo 8 caracteres"
-            minLength={8}
-            required
-          />
+          <label htmlFor="senha">Senha *</label>
+          <div className="input-with-icon">
+            <input
+              id="senha"
+              className="glass-input"
+              type={showPassword ? 'text' : 'password'}
+              name="senha"
+              value={form.senha}
+              onChange={handleChange}
+              placeholder="Mínimo 8 caracteres"
+              minLength={8}
+              autoComplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              <span className="material-symbols-outlined">
+                {showPassword ? 'visibility_off' : 'visibility'}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 

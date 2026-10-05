@@ -5,14 +5,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: clip; 
+  padding: 3rem 1rem; 
 }
 
 .cadastro-bg {
-  position: absolute;
+  position: fixed; 
   inset: 0;
   background-image: url('../assets/cadastroBG.avif');
+  background-size: cover; 
   background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0; 
+  pointer-events: none;
 }
 
 .cadastro-bg::after {
@@ -35,25 +40,15 @@
 /* ===== FORMULÁRIO ===== */
 .cadastro-form {
   width: 100%;
-  padding: 3rem 2.4rem 2.4rem;
+  max-width: 680px;
+  padding: 3.2rem 2.6rem 2.6rem;
   border-radius: 28px;
   transition: max-width 0.3s ease;
 }
 
-/* Ajusta o tamanho do card conforme a quantidade de colunas */
-.cadastro-form.cols-1 {
-  max-width: 480px;
-}
-
-.cadastro-form.cols-2 {
-  max-width: 650px;
-}
-
-.cadastro-form {
-  width: 100%;
-  max-width: 650px; 
-  padding: 3rem 2.4rem 2.4rem;
-  border-radius: 28px;
+.cadastro-form.cols-2,
+.cadastro-form:has(.form-grid.cols-2) {
+  max-width: 720px;      /* mais largo quando em 2 colunas */
 }
 
 .cadastro-form h2 {
@@ -68,10 +63,11 @@
 }
 
 .form-subtitle {
-  text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.86rem;
   color: var(--glass-text-soft);
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+  text-align: center;
 }
 
 /* Botão voltar */
@@ -102,57 +98,58 @@
 }
 
 /* Grid de campos */
+.form-field.full {
+  grid-column: 1 / -1;
+}
+
 .form-grid {
   display: grid;
-  gap: 1rem;
-}
-
-/* 1 Coluna (para etapas com até 6 campos) */
-.form-grid.cols-1 {
   grid-template-columns: 1fr;
+  gap: 1.1rem 1.25rem;   /* linha / coluna */
+  align-items: start;
 }
 
-/* 2 Colunas (para etapas com mais de 6 campos) */
 .form-grid.cols-2 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.form-field.full {
+  grid-column: 1 / -1;
+}
+
+/* Campos com alturas consistentes */
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  grid-column: span 1; 
+  gap: 0.4rem;
+  min-width: 0;          /* evita overflow em selects/inputs longos */
 }
 
-/* Elementos de largura total quando estiver em 2 colunas */
-.form-grid.cols-2 .form-field.full,
-.form-grid.cols-2 .btn-gradient.full {
-  grid-column: span 2;
-}
-
-.planos-opcoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
+/* Melhor respiro entre label e input */
 .form-field label {
-  font-family: var(--fontBody);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  padding-left: 0.3rem;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.88);
+  padding-left: 0.55rem;
+  transition: color 0.2s ease;
+}
+
+.form-field:focus-within label {
+  color: #fff;           /* label “acende” quando o input recebe foco */
 }
 
 .form-field small {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--glass-text-mute);
-  padding-left: 0.3rem;
+  padding-left: 0.55rem;
+  line-height: 1.35;
 }
 
-/* Inputs */
+
 .form-field select {
   appearance: none;
+  -webkit-appearance: none;
   cursor: pointer;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round'><polyline points='6 9 12 15 18 9'/></svg>");
   background-repeat: no-repeat;
@@ -165,40 +162,94 @@
   color: #fff;
 }
 
-.form-field textarea {
-  border-radius: 18px;
-  min-height: 100px;
-  resize: vertical;
-}
-
 .form-field input[type='date'] {
   color-scheme: dark;
 }
 
-/* botão */
+/* ===== Chips de plano ===== */
+.planos-opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-evenly;
+}
+
+.plano-chip input {
+  display: none;
+}
+
+/* ===== Botão ===== */
 .cadastro-form .btn-gradient {
   width: 100%;
   margin-top: 1.4rem;
 }
 
-
-/* Responsividade */
-@media (max-width: 580px) {
-  .cadastro-form.cols-1,
-  .cadastro-form.cols-2 {
-    max-width: 470px;
-  }
-  
-  .form-grid.cols-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid.cols-2 .form-field.full,
-  .form-grid.cols-2 .btn-gradient.full {
-    grid-column: span 1;
-  }
+.btn-gradient.full {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
 }
 
+/* ===== Input com ícone (senha) ===== */
+.input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-icon .glass-input {
+  padding-right: 3rem;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border-radius: 50%;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-password .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* ===== Indicador de progresso (etapas) ===== */
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1.4rem;
+}
+
+.step-dot {
+  width: 32px;
+  height: 4px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  background: var(--gradient-brand);
+  width: 48px;
+  box-shadow: 0 0 12px rgba(124, 92, 255, 0.6);
+}
+
+.step-dot.done {
+  background: rgba(124, 92, 255, 0.6);
+}
 
 /* ===== TELA DE ESCOLHA ===== */
 .cadastro-header {
@@ -218,7 +269,6 @@
   gap: 1.5rem;
 }
 
-/* Cards */
 .tipo-card {
   padding: 2.5rem 1.5rem;
   display: flex;
@@ -250,11 +300,7 @@
   line-height: 1.4;
 }
 
-.plano-chip input {
-  display: none;
-}
-
-/* Texto abaixo do botão */
+/* ===== Texto abaixo do botão ===== */
 .form-note,
 .cadastro-login-link {
   text-align: center;
@@ -269,4 +315,24 @@
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.form-note.full {
+  grid-column: 1 / -1;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 720px) {
+  .form-grid.cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .cadastro-form {
+    padding: 2.6rem 1.6rem 1.8rem;
+    border-radius: 24px;
+  }
+
+  .cadastro-content {
+    padding: 0 1rem;
+  }
 }

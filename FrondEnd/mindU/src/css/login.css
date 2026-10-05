@@ -1,0 +1,227 @@
+/* ===== LAYOUT DA PÁGINA ===== */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3rem 1rem;
+  overflow-x: clip;
+}
+
+.login-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('../assets/loginBG.avif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.login-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(20, 15, 60, 0.35) 20%, rgba(20, 15, 60, 0.08) 60%, rgba(20, 15, 60, 0.15) 100%);
+}
+
+.login-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 6rem);
+}
+
+/* ===== FORMULÁRIO ===== */
+.login-form {
+  width: 100%;
+  max-width: 480px;
+  padding: 3.2rem 2.6rem 2.4rem;
+  border-radius: 28px;
+  isolation: isolate;
+}
+
+.login-form h2 {
+  font-family: var(--fontHeading);
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+  color: #fff;
+  margin-top: 0.2rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(20, 15, 60, 0.3);
+}
+
+.login-form .form-subtitle {
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--glass-text-soft);
+  margin-bottom: 1.8rem;
+  line-height: 1.5;
+}
+
+/* ===== Grid ===== */
+.login-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  animation: fadeSlide 0.28s ease;
+}
+
+.login-form .form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.login-form .form-field label {
+  font-family: var(--fontBody);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.88);
+  padding-left: 0.55rem;
+  transition: color 0.2s ease;
+}
+
+.login-form .form-field:focus-within label {
+  color: #fff;
+}
+
+/* ===== Linha "Lembrar / Esqueci" ===== */
+.login-row-extras {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0 0.3rem;
+  margin-top: -0.2rem;
+}
+
+.switch-lembrar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--glass-text-soft);
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-lembrar input {
+  accent-color: #7c5cff;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.link-esqueci {
+  font-size: 0.8rem;
+  color: var(--glass-text-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.link-esqueci:hover {
+  color: #fff;
+}
+
+/* ===== Botão ===== */
+.login-form .btn-gradient {
+  width: 100%;
+  margin-top: 1.4rem;
+}
+
+.login-form .btn-gradient:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--gradient-shadow);
+}
+
+/* ===== Links inferiores ===== */
+.login-cadastro-link {
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 1.4rem;
+}
+
+.login-cadastro-link a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ===== Input com ícone (senha) ===== */
+.login-form .input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.login-form .input-with-icon .glass-input {
+  padding-right: 3rem;
+}
+
+.login-form .toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border-radius: 50%;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.login-form .toggle-password:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.login-form .toggle-password .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* ===== Animação ===== */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 720px) {
+  .login-form {
+    padding: 2.6rem 1.6rem 1.8rem;
+    border-radius: 24px;
+  }
+
+  .login-content {
+    min-height: calc(100vh - 4rem);
+  }
+}

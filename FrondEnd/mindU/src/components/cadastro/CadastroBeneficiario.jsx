@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 
 const EMPRESAS_OPCOES = [
   { value: 'technova', label: 'TechNova' },
@@ -18,9 +18,7 @@ const INITIAL_FORM_STATE = {
 
 export function CadastroBeneficiario({ onBack }) {
   const [form, setForm] = useState(INITIAL_FORM_STATE);
-  const totalCampos = useMemo(() => Object.keys(form).length, [form]);
-  const isSingleColumn = totalCampos <= 6;
-  const gridClass = isSingleColumn ? 'cols-1' : 'cols-2';
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,10 +32,10 @@ export function CadastroBeneficiario({ onBack }) {
   };
 
   return (
-    <form className={`cadastro-form glass-card ${gridClass}`} onSubmit={handleSubmit}>
-      <button 
-        type="button" 
-        className="btn-voltar" 
+    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
+      <button
+        type="button"
+        className="btn-voltar"
         onClick={onBack}
         aria-label="Voltar para a página anterior"
       >
@@ -50,8 +48,8 @@ export function CadastroBeneficiario({ onBack }) {
         Preencha seus dados para acessar o convênio da sua empresa.
       </p>
 
-      <div className={`form-grid ${gridClass}`}>
-        <div className="form-field">
+      <div className="form-grid cols-2">
+        <div className="form-field full">
           <label htmlFor="nome">Nome completo *</label>
           <input
             id="nome"
@@ -66,7 +64,7 @@ export function CadastroBeneficiario({ onBack }) {
           />
         </div>
 
-        <div className="form-field">
+        <div className="form-field full">
           <label htmlFor="emailCorporativo">E-mail corporativo *</label>
           <input
             id="emailCorporativo"
@@ -93,9 +91,7 @@ export function CadastroBeneficiario({ onBack }) {
           >
             <option value="" disabled>Selecione sua empresa</option>
             {EMPRESAS_OPCOES.map(({ value, label }) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
+              <option key={value} value={value}>{label}</option>
             ))}
           </select>
         </div>
@@ -116,20 +112,32 @@ export function CadastroBeneficiario({ onBack }) {
           <small id="matricula-help">Encontre sua matrícula no crachá ou com o RH.</small>
         </div>
 
-        <div className="form-field">
+        <div className="form-field full">
           <label htmlFor="senha">Senha *</label>
-          <input
-            id="senha"
-            className="glass-input"
-            type="password"
-            name="senha"
-            value={form.senha}
-            onChange={handleChange}
-            placeholder="Mínimo 8 caracteres"
-            minLength={8}
-            autoComplete="new-password"
-            required
-          />
+          <div className="input-with-icon">
+            <input
+              id="senha"
+              className="glass-input"
+              type={showPassword ? 'text' : 'password'}
+              name="senha"
+              value={form.senha}
+              onChange={handleChange}
+              placeholder="Mínimo 8 caracteres"
+              minLength={8}
+              autoComplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+            >
+              <span className="material-symbols-outlined">
+                {showPassword ? 'visibility_off' : 'visibility'}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 

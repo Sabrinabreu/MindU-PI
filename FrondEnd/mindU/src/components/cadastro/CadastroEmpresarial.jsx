@@ -1,16 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 
 const PLANOS_OPCOES = ['Essencial', 'Pro', 'Corporativo', 'Ainda não sei'];
 
 const INITIAL_FORM_STATE = {
-  // Etapa 1: Dados da Empresa
+  // Etapa 1
   razaoSocial: '',
   nomeFantasia: '',
   inscricaoEstadual: '',
   cnpj: '',
   responsavel: '',
-
-  // Etapa 2: Endereço e Contato
+  email: '',
+  telefone: '',
+  // Etapa 2
   cep: '',
   cidade: '',
   logradouro: '',
@@ -18,25 +19,20 @@ const INITIAL_FORM_STATE = {
   complemento: '',
   bairro: '',
   estado: '',
-  email: '',
-  telefone: '',
   plano: '',
   senha: '',
+};
+
+const CAMPOS_POR_ETAPA = {
+  1: ['razaoSocial', 'nomeFantasia', 'inscricaoEstadual', 'cnpj', 'responsavel'],
+  2: ['cep', 'cidade', 'logradouro', 'numero', 'bairro', 'estado', 'email', 'telefone'],
 };
 
 export function CadastroEmpresarial({ onBack }) {
   const [etapa, setEtapa] = useState(1);
   const [form, setForm] = useState(INITIAL_FORM_STATE);
   const [buscandoCep, setBuscandoCep] = useState(false);
-
-  const camposEtapas = useMemo(() => ({
-    1: ['razaoSocial', 'nomeFantasia', 'inscricaoEstadual', 'cnpj', 'responsavel'],
-    2: ['cep', 'cidade', 'logradouro', 'numero', 'complemento', 'bairro', 'estado', 'email', 'telefone', 'plano', 'senha'],
-  }), []);
-
-  const totalCamposEtapaAtual = camposEtapas[etapa].length;
-  const isSingleColumn = totalCamposEtapaAtual <= 6;
-  const gridClass = isSingleColumn ? 'cols-1' : 'cols-2';
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,35 +67,52 @@ export function CadastroEmpresarial({ onBack }) {
     }
   };
 
+  // Valida apenas os campos da etapa atual
+  const validarEtapa = () => {
+    const campos = CAMPOS_POR_ETAPA[etapa];
+    const invalidos = campos.filter((c) => {
+      const value = form[c];
+      if (c === 'inscricaoEstadual' || c === 'complemento') return false; // opcionais
+      return !value || (typeof value === 'string' && !value.trim());
+    });
+
+    if (invalidos.length > 0) {
+      // Foca no primeiro campo inválido
+      const first = document.getElementById(invalidos[0]);
+      first?.focus();
+      first?.reportValidity?.();
+      return false;
+    }
+    return true;
+  };
+
   const handleNextStep = (e) => {
     e.preventDefault();
-    const formElement = e.target.closest('form');
-    if (formElement.checkValidity()) {
-      setEtapa(2);
-    } else {
-      formElement.reportValidity();
-    }
+    if (validarEtapa()) setEtapa(2);
   };
 
   const handleBackStep = () => {
-    if (etapa === 2) {
-      setEtapa(1);
-    } else {
-      onBack();
-    }
+    if (etapa === 2) setEtapa(1);
+    else onBack();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.plano) {
+      alert('Selecione um plano de interesse.');
+      return;
+    }
     console.log('Cadastro Empresarial Enviado:', form);
     // TODO: Integração com API
   };
 
+  const totalEtapas = 2;
+
   return (
-    <form className={`cadastro-form glass-card ${gridClass}`} onSubmit={handleSubmit}>
-      <button 
-        type="button" 
-        className="btn-voltar" 
+    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
+      <button
+        type="button"
+        className="btn-voltar"
         onClick={handleBackStep}
         aria-label="Voltar para etapa anterior"
       >
@@ -114,11 +127,21 @@ export function CadastroEmpresarial({ onBack }) {
           : 'Preencha o endereço e dados de contato.'}
       </p>
 
-      <div className={`form-grid ${gridClass}`}>
+      {/* Indicador de progresso */}
+      <div className="step-indicator" aria-label={`Etapa ${etapa} de ${totalEtapas}`}>
+        {Array.from({ length: totalEtapas }, (_, i) => (
+          <span
+            key={i}
+            className={`step-dot ${etapa === i + 1 ? 'active' : ''} ${etapa > i + 1 ? 'done' : ''}`}
+          />
+        ))}
+      </div>
+
+      <div className="form-grid cols-2">
         {/* ================= ETAPA 1 ================= */}
         {etapa === 1 && (
           <>
-            <div className="form-field">
+            <div className="form-field full">
               <label htmlFor="razaoSocial">Razão social *</label>
               <input
                 id="razaoSocial"
@@ -155,7 +178,7 @@ export function CadastroEmpresarial({ onBack }) {
                 name="inscricaoEstadual"
                 value={form.inscricaoEstadual}
                 onChange={handleChange}
-                placeholder="Ex: 123.456.789.012"
+                placeholder="Opcional"
               />
             </div>
 
@@ -188,9 +211,39 @@ export function CadastroEmpresarial({ onBack }) {
               />
             </div>
 
+            <div className="form-field">
+              <label htmlFor="email">E-mail *</label>
+              <input
+                id="email"
+                className="glass-input"
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="contato@empresa.com.br"
+                autoComplete="email"
+                required
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="telefone">Telefone *</label>
+              <input
+                id="telefone"
+                className="glass-input"
+                type="tel"
+                name="telefone"
+                value={form.telefone}
+                onChange={handleChange}
+                placeholder="(11) 4000-0000"
+                autoComplete="tel"
+                required
+              />
+            </div>
+
             <button
               type="button"
-              className="btn-gradient"
+              className="btn-gradient full"
               onClick={handleNextStep}
             >
               Continuar
@@ -198,7 +251,7 @@ export function CadastroEmpresarial({ onBack }) {
           </>
         )}
 
-        {/* ================= ETAPA 2 (cols 2) ================= */}
+        {/* ================= ETAPA 2 ================= */}
         {etapa === 2 && (
           <>
             <div className="form-field">
@@ -305,35 +358,6 @@ export function CadastroEmpresarial({ onBack }) {
               />
             </div>
 
-            <div className="form-field">
-              <label htmlFor="email">E-mail *</label>
-              <input
-                id="email"
-                className="glass-input"
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="contato@empresa.com.br"
-                autoComplete="email"
-                required
-              />
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="telefone">Telefone *</label>
-              <input
-                id="telefone"
-                className="glass-input"
-                type="tel"
-                name="telefone"
-                value={form.telefone}
-                onChange={handleChange}
-                placeholder="(11) 4000-0000"
-                autoComplete="tel"
-                required
-              />
-            </div>
 
             <div className="form-field full">
               <label>Plano de interesse *</label>
@@ -351,7 +375,6 @@ export function CadastroEmpresarial({ onBack }) {
                       value={planoNome}
                       checked={form.plano === planoNome}
                       onChange={handleChange}
-                      required
                     />
                     {planoNome}
                   </label>
@@ -361,18 +384,30 @@ export function CadastroEmpresarial({ onBack }) {
 
             <div className="form-field full">
               <label htmlFor="senha">Senha *</label>
-              <input
-                id="senha"
-                className="glass-input"
-                type="password"
-                name="senha"
-                value={form.senha}
-                onChange={handleChange}
-                placeholder="Mínimo 8 caracteres"
-                minLength={8}
-                autoComplete="new-password"
-                required
-              />
+              <div className="input-with-icon">
+                <input
+                  id="senha"
+                  className="glass-input"
+                  type={showPassword ? 'text' : 'password'}
+                  name="senha"
+                  value={form.senha}
+                  onChange={handleChange}
+                  placeholder="Mínimo 8 caracteres"
+                  minLength={8}
+                  autoComplete="new-password"
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  <span className="material-symbols-outlined">
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <button type="submit" className="btn-gradient full">
