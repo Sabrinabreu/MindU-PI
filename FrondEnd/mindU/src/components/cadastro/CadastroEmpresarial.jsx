@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-
-const PLANOS_OPCOES = ['Essencial', 'Pro', 'Corporativo', 'Ainda não sei'];
+import React, { useState, useEffect } from 'react';
+import { api } from '../../api';
 
 const INITIAL_FORM_STATE = {
   // Etapa 1
@@ -19,20 +18,30 @@ const INITIAL_FORM_STATE = {
   complemento: '',
   bairro: '',
   estado: '',
-  plano: '',
+  planoId: '',
   senha: '',
 };
 
 const CAMPOS_POR_ETAPA = {
-  1: ['razaoSocial', 'nomeFantasia', 'inscricaoEstadual', 'cnpj', 'responsavel'],
-  2: ['cep', 'cidade', 'logradouro', 'numero', 'bairro', 'estado', 'email', 'telefone'],
+  1: ['razaoSocial', 'nomeFantasia', 'inscricaoEstadual', 'cnpj', 'responsavel', 'email', 'telefone'],
+  2: ['cep', 'cidade', 'logradouro', 'numero', 'bairro', 'estado'],
 };
 
 export function CadastroEmpresarial({ onBack }) {
   const [etapa, setEtapa] = useState(1);
   const [form, setForm] = useState(INITIAL_FORM_STATE);
+  const [planos, setPlanos] = useState([]);
   const [buscandoCep, setBuscandoCep] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState(false);
+
+  useEffect(() => {
+    api('/v1/planos')
+      .then(setPlanos)
+      .catch((err) => console.error('Erro ao carregar planos:', err));
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,12 +56,10 @@ export function CadastroEmpresarial({ onBack }) {
     try {
       const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
       const data = await res.json();
-
       if (data.erro) {
         alert('CEP não encontrado.');
         return;
       }
-
       setForm((prev) => ({
         ...prev,
         logradouro: data.logradouro || '',
@@ -67,17 +74,15 @@ export function CadastroEmpresarial({ onBack }) {
     }
   };
 
-  // Valida apenas os campos da etapa atual
   const validarEtapa = () => {
     const campos = CAMPOS_POR_ETAPA[etapa];
     const invalidos = campos.filter((c) => {
+      if (c === 'inscricaoEstadual' || c === 'complemento') return false;
       const value = form[c];
-      if (c === 'inscricaoEstadual' || c === 'complemento') return false; // opcionais
       return !value || (typeof value === 'string' && !value.trim());
     });
 
     if (invalidos.length > 0) {
-      // Foca no primeiro campo inválido
       const first = document.getElementById(invalidos[0]);
       first?.focus();
       first?.reportValidity?.();
@@ -96,15 +101,67 @@ export function CadastroEmpresarial({ onBack }) {
     else onBack();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.plano) {
-      alert('Selecione um plano de interesse.');
+    setErro('');
+
+    if (!form.planoId) {
+      setErro('Selecione um plano de interesse.');
       return;
     }
-    console.log('Cadastro Empresarial Enviado:', form);
-    // TODO: Integração com API
+
+    setLoading(true);
+    try {
+      await api('/v1/empresas', {
+        method: 'POST',
+        body: {
+          razaoSocial: form.razaoSocial,
+          nomeFantasia: form.nomeFantasia,
+          inscricaoEstadual: form.inscricaoEstadual,
+          cnpj: form.cnpj,
+          responsavel: form.responsavel,
+          cep: form.cep,
+          logradouro: form.logradouro,
+          numero: form.numero,
+          complemento: form.complemento,
+          bairro: form.bairro,
+          cidade: form.cidade,
+          estado: form.estado,
+          email: form.email,
+          telefone: form.telefone,
+          senha: form.senha,
+          planoId: form.planoId,
+        },
+      });
+      setSucesso(true);
+    } catch (err) {
+      setErro(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (sucesso) {
+    return (
+      <div className="cadastro-form glass-card cols-1">
+        <div className="sucesso-box">
+          <span className="material-symbols-outlined sucesso-icon">check_circle</span>
+          <h2>Empresa cadastrada!</h2>
+          <p className="form-subtitle">
+            Sua empresa está pronta. Faça login para gerar matrículas e convidar
+            seus colaboradores.
+          </p>
+          <button
+            type="button"
+            className="btn-gradient"
+            onClick={() => (window.location.href = '/login')}
+          >
+            Ir para o login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const totalEtapas = 2;
 
@@ -124,10 +181,9 @@ export function CadastroEmpresarial({ onBack }) {
       <p className="form-subtitle">
         {etapa === 1
           ? 'Informe os dados da empresa para iniciar.'
-          : 'Preencha o endereço e dados de contato.'}
+          : 'Preencha o endereço e escolha o plano.'}
       </p>
 
-      {/* Indicador de progresso */}
       <div className="step-indicator" aria-label={`Etapa ${etapa} de ${totalEtapas}`}>
         {Array.from({ length: totalEtapas }, (_, i) => (
           <span
@@ -138,7 +194,6 @@ export function CadastroEmpresarial({ onBack }) {
       </div>
 
       <div className="form-grid cols-2">
-        {/* ================= ETAPA 1 ================= */}
         {etapa === 1 && (
           <>
             <div className="form-field full">
@@ -170,19 +225,6 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label htmlFor="inscricaoEstadual">Inscrição estadual</label>
-              <input
-                id="inscricaoEstadual"
-                className="glass-input"
-                type="text"
-                name="inscricaoEstadual"
-                value={form.inscricaoEstadual}
-                onChange={handleChange}
-                placeholder="Opcional"
-              />
-            </div>
-
-            <div className="form-field">
               <label htmlFor="cnpj">CNPJ *</label>
               <input
                 id="cnpj"
@@ -193,6 +235,19 @@ export function CadastroEmpresarial({ onBack }) {
                 onChange={handleChange}
                 placeholder="00.000.000/0000-00"
                 required
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="inscricaoEstadual">Inscrição estadual</label>
+              <input
+                id="inscricaoEstadual"
+                className="glass-input"
+                type="text"
+                name="inscricaoEstadual"
+                value={form.inscricaoEstadual}
+                onChange={handleChange}
+                placeholder="Opcional"
               />
             </div>
 
@@ -251,7 +306,6 @@ export function CadastroEmpresarial({ onBack }) {
           </>
         )}
 
-        {/* ================= ETAPA 2 ================= */}
         {etapa === 2 && (
           <>
             <div className="form-field">
@@ -273,15 +327,15 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label htmlFor="cidade">Cidade *</label>
+              <label htmlFor="numero">Número *</label>
               <input
-                id="cidade"
+                id="numero"
                 className="glass-input"
                 type="text"
-                name="cidade"
-                value={form.cidade}
+                name="numero"
+                value={form.numero}
                 onChange={handleChange}
-                autoComplete="address-level2"
+                placeholder="Ex: 123"
                 required
               />
             </div>
@@ -301,21 +355,7 @@ export function CadastroEmpresarial({ onBack }) {
               />
             </div>
 
-            <div className="form-field">
-              <label htmlFor="numero">Número *</label>
-              <input
-                id="numero"
-                className="glass-input"
-                type="text"
-                name="numero"
-                value={form.numero}
-                onChange={handleChange}
-                placeholder="Ex: 123"
-                required
-              />
-            </div>
-
-            <div className="form-field">
+            <div className="form-field full">
               <label htmlFor="complemento">Complemento</label>
               <input
                 id="complemento"
@@ -329,7 +369,7 @@ export function CadastroEmpresarial({ onBack }) {
               />
             </div>
 
-            <div className="form-field">
+            <div className="form-field full">
               <label htmlFor="bairro">Bairro *</label>
               <input
                 id="bairro"
@@ -343,7 +383,21 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
 
             <div className="form-field">
-              <label htmlFor="estado">Estado *</label>
+              <label htmlFor="cidade">Cidade *</label>
+              <input
+                id="cidade"
+                className="glass-input"
+                type="text"
+                name="cidade"
+                value={form.cidade}
+                onChange={handleChange}
+                autoComplete="address-level2"
+                required
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="estado">UF *</label>
               <input
                 id="estado"
                 className="glass-input"
@@ -358,25 +412,23 @@ export function CadastroEmpresarial({ onBack }) {
               />
             </div>
 
-
             <div className="form-field full">
               <label>Plano de interesse *</label>
               <div className="planos-opcoes">
-                {PLANOS_OPCOES.map((planoNome) => (
+                {planos.length === 0 && <small>Carregando planos...</small>}
+                {planos.map((p) => (
                   <label
-                    key={planoNome}
-                    className={`plano-chip glass-chip ${
-                      form.plano === planoNome ? 'active' : ''
-                    }`}
+                    key={p.id}
+                    className={`plano-chip glass-chip ${form.planoId === p.id ? 'active' : ''}`}
                   >
                     <input
                       type="radio"
-                      name="plano"
-                      value={planoNome}
-                      checked={form.plano === planoNome}
+                      name="planoId"
+                      value={p.id}
+                      checked={form.planoId === p.id}
                       onChange={handleChange}
                     />
-                    {planoNome}
+                    {p.nome}
                   </label>
                 ))}
               </div>
@@ -410,8 +462,14 @@ export function CadastroEmpresarial({ onBack }) {
               </div>
             </div>
 
-            <button type="submit" className="btn-gradient full">
-              Solicitar proposta
+            {erro && (
+              <div className="form-field full">
+                <p className="form-erro">{erro}</p>
+              </div>
+            )}
+
+            <button type="submit" className="btn-gradient full" disabled={loading}>
+              {loading ? 'Enviando...' : 'Criar minha empresa'}
             </button>
           </>
         )}

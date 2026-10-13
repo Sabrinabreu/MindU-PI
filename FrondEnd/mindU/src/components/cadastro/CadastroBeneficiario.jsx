@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+import { api } from '../../api';
 
+// ⚠️ Temporário — depois deve vir de GET /v1/empresas/por-matricula
 const EMPRESAS_OPCOES = [
-  { value: 'technova', label: 'TechNova' },
-  { value: 'orbegroup', label: 'Grupo Orbe' },
-  { value: 'finantech', label: 'FinanTech' },
-  { value: 'logione', label: 'LogiOne' },
-  { value: 'educamais', label: 'EducaMais' },
+  { value: 'uuid-technova', label: 'TechNova' },
+  { value: 'uuid-orbegroup', label: 'Grupo Orbe' },
+  { value: 'uuid-finantech', label: 'FinanTech' },
+  { value: 'uuid-logione', label: 'LogiOne' },
+  { value: 'uuid-educamais', label: 'EducaMais' },
 ];
 
 const INITIAL_FORM_STATE = {
   nome: '',
-  emailCorporativo: '',
+  email: '',
   empresa: '',
   matricula: '',
   senha: '',
@@ -19,20 +21,63 @@ const INITIAL_FORM_STATE = {
 export function CadastroBeneficiario({ onBack }) {
   const [form, setForm] = useState(INITIAL_FORM_STATE);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Cadastro Beneficiário:', form);
-    // TODO: Integração com API
+    setErro('');
+    setLoading(true);
+
+    try {
+      await api('/v1/clientes', {
+        method: 'POST',
+        body: {
+          nome: form.nome,
+          email: form.email,
+          senha: form.senha,
+          empresaId: form.empresa,
+          matricula: form.matricula,
+        },
+      });
+      setSucesso(true);
+    } catch (err) {
+      setErro(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  if (sucesso) {
+    return (
+      <div className="cadastro-form glass-card cols-1">
+        <div className="sucesso-box">
+          <span className="material-symbols-outlined sucesso-icon">hourglass_top</span>
+          <h2>Aguardando aprovação</h2>
+          <p className="form-subtitle">
+            Seu cadastro foi enviado para o RH da sua empresa. Assim que for
+            aprovado, você recebe um e-mail para acessar e completar seus dados.
+          </p>
+          <button
+            type="button"
+            className="btn-gradient"
+            onClick={() => (window.location.href = '/login')}
+          >
+            Ir para o login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <form className="cadastro-form glass-card" onSubmit={handleSubmit}>
+    <form className="cadastro-form glass-card cols-1" onSubmit={handleSubmit}>
       <button
         type="button"
         className="btn-voltar"
@@ -45,10 +90,10 @@ export function CadastroBeneficiario({ onBack }) {
 
       <h2>Cadastro de Beneficiário</h2>
       <p className="form-subtitle">
-        Preencha seus dados para acessar o convênio da sua empresa.
+        Crie sua conta com a matrícula fornecida pelo RH da sua empresa.
       </p>
 
-      <div className="form-grid cols-2">
+      <div className="form-grid cols-1">
         <div className="form-field full">
           <label htmlFor="nome">Nome completo *</label>
           <input
@@ -65,21 +110,21 @@ export function CadastroBeneficiario({ onBack }) {
         </div>
 
         <div className="form-field full">
-          <label htmlFor="emailCorporativo">E-mail corporativo *</label>
+          <label htmlFor="email">E-mail *</label>
           <input
-            id="emailCorporativo"
+            id="email"
             className="glass-input"
             type="email"
-            name="emailCorporativo"
-            value={form.emailCorporativo}
+            name="email"
+            value={form.email}
             onChange={handleChange}
-            placeholder="seu.nome@empresa.com.br"
+            placeholder="seu@email.com"
             autoComplete="email"
             required
           />
         </div>
 
-        <div className="form-field">
+        <div className="form-field full">
           <label htmlFor="empresa">Empresa vinculada *</label>
           <select
             id="empresa"
@@ -96,7 +141,7 @@ export function CadastroBeneficiario({ onBack }) {
           </select>
         </div>
 
-        <div className="form-field">
+        <div className="form-field full">
           <label htmlFor="matricula">Matrícula *</label>
           <input
             id="matricula"
@@ -105,11 +150,10 @@ export function CadastroBeneficiario({ onBack }) {
             name="matricula"
             value={form.matricula}
             onChange={handleChange}
-            placeholder="Ex: 12345"
-            aria-describedby="matricula-help"
+            placeholder="Ex: A1B2C3"
             required
           />
-          <small id="matricula-help">Encontre sua matrícula no crachá ou com o RH.</small>
+          <small>Você recebeu essa matrícula do RH da sua empresa.</small>
         </div>
 
         <div className="form-field full">
@@ -141,8 +185,10 @@ export function CadastroBeneficiario({ onBack }) {
         </div>
       </div>
 
-      <button type="submit" className="btn-gradient">
-        Criar minha conta
+      {erro && <p className="form-erro">{erro}</p>}
+
+      <button type="submit" className="btn-gradient" disabled={loading}>
+        {loading ? 'Enviando...' : 'Criar minha conta'}
       </button>
     </form>
   );

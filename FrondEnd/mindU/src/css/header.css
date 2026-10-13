@@ -1,6 +1,11 @@
-/* ===== Variáveis exclusivas da seção Benefícios ===== */
 .site-header {
   --bgHeader: #3D366D;
+
+  width: 100%;
+  background-color: var(--bgHeader);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -9,24 +14,17 @@
   }
 }
 
-
-.site-header {
-  width: 100%;
-  background-color: var(--bgHeader);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
 .header-container {
   margin: 0 auto;
   padding: 0.6rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
-.logo, .header-actions {
+.logo,
+.header-actions {
   flex: 1;
 }
 
@@ -41,15 +39,17 @@
 .header-actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
 }
 
+/* ===== Navegação ===== */
 .nav-menu {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-.nav-menu a, .header-actions a {
+.nav-menu a {
   font-family: var(--fontBody);
   text-decoration: none;
   color: #ffffff;
@@ -61,6 +61,7 @@
   color: #cccccc;
 }
 
+/* Botão primário (Login) */
 .btn-primary {
   background-color: var(--accent);
   color: #ffffff;
@@ -69,7 +70,8 @@
   text-decoration: none;
   font-family: var(--fontBody);
   font-weight: 500;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
@@ -77,11 +79,7 @@
   color: #f5ecff;
 }
 
-/* Oculta infomações no desktop */
-.mobile-only {
-  display: none;
-}
-
+/* Botão hamburguer (mobile) */
 .menu-toggle {
   display: none;
   background: none;
@@ -91,18 +89,92 @@
   color: #ffffff;
 }
 
-/* Responsividade */
+
+/* =========================================================
+   MODO USUÁRIO LOGADO — botão com avatar
+   ========================================================= */
+
+.header-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.35rem 1rem 0.35rem 0.35rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 100px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.header-user-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.header-user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.header-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-user-avatar .material-symbols-outlined {
+  font-size: 22px;
+}
+
+.header-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+  min-width: 0;
+}
+
+.header-user-name {
+  font-family: var(--fontBody);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-user-tipo {
+  font-family: var(--fontBody);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* RESPONSIVIDADE */
+
 @media (max-width: 768px) {
   .menu-toggle {
     display: block;
+    order: 2;
+  }
+
+  .logo {
+    order: 1;
   }
 
   .header-actions {
     display: none;
-  }
-
-  .mobile-only {
-    display: inline-block;
   }
 
   .nav-menu {
@@ -111,13 +183,21 @@
     top: 100%;
     left: 0;
     right: 0;
-    background-color: var(--primary);
+    background-color: var(--bgHeader);
     flex-direction: column;
-    padding: 1rem;
+    align-items: flex-start;
+    padding: 1.5rem;
     gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   }
 
   .nav-menu.active {
     display: flex;
+  }
+
+  .nav-menu a {
+    font-size: 1rem;
+    width: 100%;
   }
 }

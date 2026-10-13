@@ -1,0 +1,52 @@
+.perfil-app {
+  width: 100%;
+  background-color: var(--bg);
+}
+
+.perfil-layout {
+  display: flex;
+  align-items: stretch;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+}
+
+.perfil-main {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 3rem;
+}
+
+.perfil-capa {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.perfil-capa > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-capa-avatar {
+  position: absolute;
+  bottom: -40px;
+  left: 2rem;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 4px solid var(--bg);
+  overflow: hidden;
+  background: var(--code-bg);
+}
+
+.perfil-capa-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-conteudo {
+  padding: 4rem 2rem 2rem;
+}

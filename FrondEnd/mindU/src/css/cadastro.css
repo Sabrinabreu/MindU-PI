@@ -336,3 +336,43 @@
     padding: 0 1rem;
   }
 }
+
+
+/* ===== Estados de feedback ===== */
+.sucesso-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.sucesso-icon {
+  font-size: 3rem !important;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.15);
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.form-erro {
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  color: #ffb3b3;
+  font-size: 0.85rem;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.btn-gradient:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
