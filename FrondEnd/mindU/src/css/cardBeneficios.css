@@ -5,11 +5,10 @@
   --benef-bg: #cfcfe7;
 }
 
-@media (prefers-color-scheme: dark) {
+:root[data-theme="dark"]
   .section-Benef {
     --benef-bg: #1f2028;
   }
-}
 
 .cardBenef-container {
   width: 100%;

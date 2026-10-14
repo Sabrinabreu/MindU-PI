@@ -108,11 +108,11 @@
   background-color: #f0f0f0;
 }
 
-@media (prefers-color-scheme: dark) {
+:root[data-theme="dark"]
   .btn-plan:hover {
     background-color: #292b36;
   }
-}
+
 
 .plan-card .btn-primary {
   text-align: center;

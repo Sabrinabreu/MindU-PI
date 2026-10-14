@@ -188,10 +188,9 @@
   line-height: 1.4;
 }
 
-/* ===========================
-   DARK MODE
-   =========================== */
-@media (prefers-color-scheme: dark) {
+/*DARK MODE*/
+:root[data-theme="dark"]
+  
   .contato-card-icon {
     background: rgba(153, 146, 201, 0.15);
     color: var(--primary);
@@ -212,11 +211,8 @@
   .contato-mapa .leaflet-tile {
     filter: brightness(0.85) contrast(1.05) saturate(0.9);
   }
-}
 
-/* ===========================
-   RESPONSIVIDADE
-   =========================== */
+/* RESPONSIVIDADE */
 @media (max-width: 1024px) {
   .contato-canais {
     grid-template-columns: repeat(2, 1fr);

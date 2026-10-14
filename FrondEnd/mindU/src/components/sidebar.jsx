@@ -1,6 +1,7 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { limparSessao } from '../api';
+import { useTema } from '../hooks/useTema'; 
 import '../css/sidebar.css';
 
 // Links de exemplo (substituir depois)
@@ -23,7 +24,6 @@ const MENUS_POR_TIPO = {
     { icon: 'dashboard', label: 'Dashboard', to: '/dashboard' },
     { icon: 'group', label: 'Colaboradores', to: '/colaboradores' },
     { icon: 'badge', label: 'Matrículas', to: '/matriculas' },
-    { icon: 'bar_chart', label: 'Relatórios', to: '/relatorios' },
   ],
   ADMIN: [
     { icon: 'person', label: 'Meu Perfil', to: '/perfil' },
@@ -37,6 +37,7 @@ const MENUS_POR_TIPO = {
 
 export function Sidebar({ usuario, isOpen, onClose }) {
   const navigate = useNavigate();
+  const { tema, toggleTema } = useTema();
 
   if (!usuario) return null;
 
@@ -57,7 +58,7 @@ export function Sidebar({ usuario, isOpen, onClose }) {
       />
 
       <aside className={`sidebar ${isOpen ? 'active' : ''}`} aria-hidden={!isOpen}>
-        <div className="sidebar-user">
+        <Link to="/perfil" className="sidebar-user" onClick={onClose}>
           <div className="sidebar-avatar">
             {usuario.foto ? (
               <img src={usuario.foto} alt={usuario.nome} />
@@ -69,7 +70,7 @@ export function Sidebar({ usuario, isOpen, onClose }) {
             <strong>{usuario.nome || 'Usuário MindU'}</strong>
             <small>{formatarTipo(usuario.tipo)}</small>
           </div>
-        </div>
+        </Link>
 
         <nav className="sidebar-nav">
           {links.map((link) => (
@@ -86,6 +87,13 @@ export function Sidebar({ usuario, isOpen, onClose }) {
             </NavLink>
           ))}
         </nav>
+
+        <button type="button" className="sidebar-tema" onClick={toggleTema}>
+          <span className="material-symbols-outlined">
+            {tema === 'dark' ? 'light_mode' : 'dark_mode'}
+          </span>
+          {tema === 'dark' ? 'Tema claro' : 'Tema escuro'}
+        </button>
 
         <button type="button" className="sidebar-logout" onClick={handleLogout}>
           <span className="material-symbols-outlined">logout</span>

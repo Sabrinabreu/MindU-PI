@@ -5,13 +5,13 @@
   --tittleFooter: #9992C9;
 }
 
-@media (prefers-color-scheme: dark) {
+:root[data-theme="dark"]
   .footer {
     --bgHeader: #1f2028;
     --textFooter: #c4c1cb;
     --tittleFooter: #9992C9;
   }
-}
+
 
 .footer {
   width: 100%;

@@ -8,11 +8,11 @@
   z-index: 1000;
 }
 
-@media (prefers-color-scheme: dark) {
+:root[data-theme="dark"]
   .site-header {
     --bgHeader: #1f2028;
   }
-}
+
 
 .header-container {
   margin: 0 auto;
