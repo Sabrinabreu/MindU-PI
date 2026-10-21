@@ -215,11 +215,6 @@ export function Perfil() {
           <div className="perfil-capa-info">
             <div className="perfil-capa-avatar">
               <img src={form.foto} alt={form.nome} />
-              {usuario.tipo === 'PROFISSIONAL' && (
-                <span className="perfil-verificado" title="Profissional verificado">
-                  <span className="material-symbols-outlined">verified</span>
-                </span>
-              )}
               <label className="perfil-edit-avatar-btn" title="Alterar foto">
                 <span className="material-symbols-outlined">photo_camera</span>
                 <input type="file" accept="image/*" name="foto" onChange={handleChange} hidden />
@@ -468,9 +463,6 @@ function Secao({ icon, iconColor = 'icon-roxo', titulo, subtitulo, children }) {
           <h3>{titulo}</h3>
           {subtitulo && <p>{subtitulo}</p>}
         </div>
-        <button type="button" className="perfil-secao-edit" aria-label="Editar seção">
-          <span className="material-symbols-outlined">edit</span>
-        </button>
       </div>
       <div className="perfil-grid">{children}</div>
     </div>

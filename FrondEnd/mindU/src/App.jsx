@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
-import { Header } from './header';
+
+
 import { Home } from './page/home';
 import { Contato } from './page/contato';
 import { Cadastro } from './page/cadastro';
 import { Login } from './page/login';
 import { Perfil } from './page/perfil';
+import { Agenda } from './page/agenda';
+
+
+import { Header } from './header';
 import { Footer } from './components/footer';
 import { Sidebar } from './components/sidebar';
+
+
 import { RotaProtegida } from './components/rotasProtegidas';
 import { useUsuario } from './hooks/useUsuario';
 
@@ -39,7 +46,7 @@ function App() {
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Rota logada (qualquer tipo) */}
+        {/* Rotas logadas (qualquer tipo) */}
         <Route
           path="/perfil"
           element={
@@ -81,8 +88,8 @@ function App() {
         <Route
           path="/agenda"
           element={
-            <RotaProtegida tipos={['PROFISSIONAL']}>
-              <Placeholder titulo="Minha Agenda" />
+            <RotaProtegida tipos={['PROFISSIONAL', 'BENEFICIARIO']}>
+              <Agenda titulo="Minha Agenda" />
             </RotaProtegida>
           }
         />

@@ -1,21 +1,17 @@
-import { useState } from 'react'
-import { About } from '../components/quemSomos'
-import { SessaoPlanos } from '../components/cardPlanos'
-import { PorQueMindU } from '../components/cardBeneficios'
-import { Depoimentos } from '../components/depoimentos'
-import '../index.css';
+import { About } from '../components/home/quemSomos';
+import { SessaoPlanos } from '../components/home/cardPlanos';
+import { PorQueMindU } from '../components/home/cardBeneficios';
+import { Depoimentos } from '../components/home/depoimentos';
 
 export function Home() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-    <About/>
-    <SessaoPlanos/>
-    <PorQueMindU/>
-    <Depoimentos/>
-    </>
-  )
+    <main>
+      <About />
+      <PorQueMindU />
+      <Depoimentos />
+      <SessaoPlanos />
+    </main>
+  );
 }
 
-export default Home
+export default Home;

@@ -1,0 +1,107 @@
+/* ================= COMPONENTE CALENDÁRIO ================= */
+.calendar-container {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--code-bg);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.calendario-header h2 {
+  font-family: var(--fontHeading);
+  font-size: 1.6rem;
+  color: var(--primary);
+  margin: 0;
+}
+
+.calendario-controles {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.calendario-controles button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-s);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calendario-controles button:hover {
+  background: var(--bg);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.calendario-dia-semana {
+  text-align: center;
+  font-family: var(--fontBody);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-m);
+  padding-bottom: 1rem;
+}
+
+.calendario-dia {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  font-family: var(--fontBody);
+  font-size: 0.95rem;
+  color: var(--text);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.calendario-dia.vazio { cursor: default; }
+.calendario-dia:not(.vazio):hover { background-color: var(--bg); }
+
+.calendario-dia.hoje span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.calendario-dia.selecionado {
+  background-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(61, 54, 109, 0.3);
+}
+
+.calendario-dia.selecionado span { color: #fff; }
+
+.calendario-ponto {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  position: absolute;
+  bottom: 20%;
+}
+
+.calendario-dia.selecionado .calendario-ponto { background-color: #fff; }

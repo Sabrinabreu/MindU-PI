@@ -1,6 +1,6 @@
 import React from 'react';
-import '../css/quemSomos.css';
-import SobreImage from '../assets/imgSobre.png'; 
+import '../../css/quemSomos.css';
+import SobreImage from '../../assets/imgSobre.png'; 
 
 export function About() {
   return (

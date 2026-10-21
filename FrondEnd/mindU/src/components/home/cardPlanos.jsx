@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/cardPlanos.css';
+import '../../css/cardPlanos.css';
 
 export function SessaoPlanos() {
   const plans = [

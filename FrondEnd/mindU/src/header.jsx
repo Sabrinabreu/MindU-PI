@@ -13,25 +13,16 @@ export function Header({ usuario, onToggleSidebar }) {
           MindU
         </Link>
 
-        <button
-          className="menu-toggle"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle Menu"
-        >
-          {isMenuOpen ? '✕' : '☰'}
-        </button>
-
+        {/* Navbar central (Desktop) */}
         <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <Link to="/" onClick={closeMenu}>Início</Link>
           <Link to="/contato" onClick={closeMenu}>Contato</Link>
-
           {!usuario && (
-            <Link to="/cadastro" onClick={closeMenu}>
-              Cadastro
-            </Link>
+            <Link to="/cadastro" onClick={closeMenu}>Cadastro</Link>
           )}
         </nav>
 
+        {/* Ações e Botões (Mobile e Desktop) */}
         <div className="header-actions">
           {usuario ? (
             <button
@@ -57,23 +48,28 @@ export function Header({ usuario, onToggleSidebar }) {
               </div>
             </button>
           ) : (
-            <Link to="/login" className="btn-primary">
-              Login
-            </Link>
+            <Link to="/login" className="btn-primary">Login</Link>
           )}
         </div>
+
+        {/* Botão Hambúrguer (Mobile) */}
+        <button
+          className="menu-toggle"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle Menu"
+        >
+          {isMenuOpen ? '✕' : '☰'}
+        </button>
       </div>
     </header>
   );
 }
 
 function formatarTipo(tipo) {
-  return (
-    {
-      BENEFICIARIO: 'Beneficiário',
-      PROFISSIONAL: 'Profissional',
-      EMPRESA: 'Empresa',
-      ADMIN: 'Administrador',
-    }[tipo] || ''
-  );
+  return {
+    BENEFICIARIO: 'Beneficiário',
+    PROFISSIONAL: 'Profissional',
+    EMPRESA: 'Empresa',
+    ADMIN: 'Administrador',
+  }[tipo] || '';
 }

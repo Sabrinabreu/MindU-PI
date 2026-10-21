@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/cardBeneficios.css';
+import '../../css/cardBeneficios.css';
 
 export function PorQueMindU() {
   const benefits = [

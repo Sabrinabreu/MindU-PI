@@ -118,26 +118,6 @@
   margin: 0;
 }
 
-/* Badge de verificado */
-.perfil-verificado {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--code-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4a9eff;
-  z-index: 2;
-}
-.perfil-verificado .material-symbols-outlined {
-  font-size: 26px;
-  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-}
-
 /* Hover de editar foto */
 .perfil-edit-avatar-btn {
   position: absolute;
@@ -380,9 +360,7 @@
     width: 96px;
     height: 96px;
   }
-  .perfil-verificado { width: 26px; height: 26px; }
-  .perfil-verificado .material-symbols-outlined { font-size: 20px; }
-
+  
   .perfil-capa-info {
     margin-top: -50px;
     padding: 0 1.2rem 1rem;
