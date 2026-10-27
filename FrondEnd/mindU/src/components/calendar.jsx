@@ -8,7 +8,7 @@ const NOMES_MESES = [
 
 const DIAS_SEMANA = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-export function Calendar({ dataSelecionada, onSelectData, eventos = {} }) {
+export function Calendar({ dataSelecionada, onSelectData, eventos = {}, diasBloqueados = [] }) {
   const [mesVisualizado, setMesVisualizado] = useState(dataSelecionada || new Date());
 
   const mesAnterior = () => {
@@ -19,18 +19,15 @@ export function Calendar({ dataSelecionada, onSelectData, eventos = {} }) {
     setMesVisualizado(new Date(mesVisualizado.getFullYear(), mesVisualizado.getMonth() + 1, 1));
   };
 
-  // Grade de dias
   const gerarCalendario = () => {
     const ano = mesVisualizado.getFullYear();
     const mes = mesVisualizado.getMonth();
-    
     const primeiroDia = new Date(ano, mes, 1).getDay(); 
     const ultimoDia = new Date(ano, mes + 1, 0).getDate(); 
     
     const dias = [];
-    for (let i = 0; i < primeiroDia; i++) dias.push(null); // Espaços vazios
+    for (let i = 0; i < primeiroDia; i++) dias.push(null); 
     for (let i = 1; i <= ultimoDia; i++) dias.push(new Date(ano, mes, i));
-    
     return dias;
   };
 
@@ -69,16 +66,20 @@ export function Calendar({ dataSelecionada, onSelectData, eventos = {} }) {
           const isHoje = formatarDataChave(data) === formatarDataChave(new Date());
           const isSelecionado = formatarDataChave(data) === formatarDataChave(dataSelecionada);
           const temEvento = eventos[formatarDataChave(data)]?.length > 0;
+          
+          // Verifica se o dia está bloqueado
+          const isBloqueado = diasBloqueados.includes(data.getDay());
 
           return (
             <button
               key={index}
               type="button"
-              className={`calendario-dia ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''}`}
+              disabled={isBloqueado}
+              className={`calendario-dia ${isHoje ? 'hoje' : ''} ${isSelecionado ? 'selecionado' : ''} ${isBloqueado ? 'bloqueado' : ''}`}
               onClick={() => onSelectData(data)}
             >
               <span>{data.getDate()}</span>
-              {temEvento && <span className="calendario-ponto"></span>}
+              {temEvento && !isBloqueado && <span className="calendario-ponto"></span>}
             </button>
           );
         })}

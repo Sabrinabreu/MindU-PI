@@ -9,6 +9,10 @@ import { Cadastro } from './page/cadastro';
 import { Login } from './page/login';
 import { Perfil } from './page/perfil';
 import { Agenda } from './page/agenda';
+import { BuscaProfissional } from './page/buscaProfissional';
+import { AgendarConsulta } from './page/agendarConsulta';
+import { Historico } from './page/historico';
+import { DashboardEmpresa } from './page/dashboardEmpresa';
 
 
 import { Header } from './header';
@@ -60,26 +64,26 @@ function App() {
 
         {/* Beneficiário */}
         <Route
-          path="/agendamentos"
-          element={
-            <RotaProtegida tipos={['BENEFICIARIO']}>
-              <Placeholder titulo="Agendamentos" />
-            </RotaProtegida>
-          }
-        />
-        <Route
           path="/profissionais"
           element={
             <RotaProtegida tipos={['BENEFICIARIO']}>
-              <Placeholder titulo="Buscar Profissionais" />
+              <BuscaProfissional titulo="Buscar Profissionais" />
             </RotaProtegida>
           }
+        />
+        <Route 
+          path="/agendar" 
+          element={
+            <RotaProtegida tipos={['BENEFICIARIO']}>
+              <AgendarConsulta />
+            </RotaProtegida>
+          } 
         />
         <Route
           path="/historico"
           element={
             <RotaProtegida tipos={['BENEFICIARIO']}>
-              <Placeholder titulo="Histórico" />
+              <Historico titulo="Histórico" />
             </RotaProtegida>
           }
         />
@@ -123,7 +127,7 @@ function App() {
           path="/dashboard"
           element={
             <RotaProtegida tipos={['EMPRESA']}>
-              <Placeholder titulo="Dashboard" />
+              <DashboardEmpresa titulo="Dashboard" />
             </RotaProtegida>
           }
         />

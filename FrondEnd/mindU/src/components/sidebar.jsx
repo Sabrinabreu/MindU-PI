@@ -8,7 +8,7 @@ import '../css/sidebar.css';
 const MENUS_POR_TIPO = {
   BENEFICIARIO: [
     { icon: 'person', label: 'Meu Perfil', to: '/perfil' },
-    { icon: 'event', label: 'Agendamentos', to: '/agendamentos' },
+    { icon: 'event', label: 'Agendamentos', to: '/agenda' },
     { icon: 'search', label: 'Profissionais', to: '/profissionais' },
     { icon: 'history', label: 'Histórico', to: '/historico' },
   ],
