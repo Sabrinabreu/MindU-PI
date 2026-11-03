@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './css/header.css';
+import { getIniciais } from './api';
 
 export function Header({ usuario, onToggleSidebar }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,7 +36,7 @@ export function Header({ usuario, onToggleSidebar }) {
                 {usuario.foto ? (
                   <img src={usuario.foto} alt={usuario.nome} />
                 ) : (
-                  <span className="material-symbols-outlined">person</span>
+                  <span className="avatar-text">{getIniciais(usuario.nome)}</span>
                 )}
               </div>
               <div className="header-user-info">
@@ -48,7 +49,7 @@ export function Header({ usuario, onToggleSidebar }) {
               </div>
             </button>
           ) : (
-            <Link to="/login" className="btn-primary">Login</Link>
+            <Link to="/login" className="btn-header-action">Login</Link>
           )}
         </div>
 

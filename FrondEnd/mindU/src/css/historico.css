@@ -10,20 +10,18 @@
 }
 
 .historico-header h1 {
-  font-family: var(--fontHeading);
   font-size: 2rem;
   color: var(--primary);
   margin: 0 0 0.2rem;
 }
 
 .historico-header p {
-  font-family: var(--fontBody);
   color: var(--text-s);
   font-size: 1rem;
   margin: 0;
 }
 
-/* === ABAS === */
+/* ABAS */
 .historico-tabs {
   display: flex;
   gap: 0.5rem;
@@ -57,7 +55,7 @@
   font-weight: 500;
 }
 
-/* === CARDS DO HISTÓRICO === */
+/* CARDS */
 .historico-lista {
   display: flex;
   flex-direction: column;
@@ -90,18 +88,16 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--bg);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .hist-profile h3 {
-  font-family: var(--fontHeading);
   font-size: 1.1rem;
   color: var(--primary);
   margin: 0 0 0.2rem;
 }
 
 .hist-profile span {
-  font-family: var(--fontBody);
   font-size: 0.85rem;
   color: var(--accent);
   font-weight: 500;
@@ -127,63 +123,23 @@
 }
 
 .hist-data strong {
-  font-family: var(--fontBody);
   font-size: 0.95rem;
   color: var(--text);
 }
 
 .hist-data span {
-  font-family: var(--fontBody);
   font-size: 0.8rem;
   color: var(--text-s);
 }
 
-/* === AÇÕES === */
+/* AÇÕES */
 .hist-actions {
   display: flex;
   gap: 0.8rem;
   flex-wrap: wrap;
 }
 
-.hist-actions button {
-  padding: 0.6rem 1.2rem;
-  border-radius: 100px;
-  font-family: var(--fontBody);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-s);
-}
-
-.btn-outline:hover:not(:disabled) {
-  background: var(--bg);
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.btn-outline:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background: var(--accent);
-  border: 1px solid var(--accent);
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background: var(--accent-h);
-  border-color: var(--accent-h);
-}
-
-/* === ESTADO VAZIO === */
+/* ESTADO VAZIO */
 .historico-vazio {
   text-align: center;
   padding: 4rem 2rem;
@@ -199,11 +155,10 @@
 }
 
 .historico-vazio p {
-  font-family: var(--fontBody);
   font-size: 1.1rem;
 }
 
-/* === RESPONSIVIDADE === */
+/* RESPONSIVIDADE */
 @media (max-width: 768px) {
   .historico-card {
     flex-direction: column;

@@ -13,6 +13,8 @@ import { BuscaProfissional } from './page/buscaProfissional';
 import { AgendarConsulta } from './page/agendarConsulta';
 import { Historico } from './page/historico';
 import { DashboardEmpresa } from './page/dashboardEmpresa';
+import { Colaboradores } from './page/colaboradores';
+import { Matriculas } from './page/matriculas';
 
 
 import { Header } from './header';
@@ -135,7 +137,7 @@ function App() {
           path="/colaboradores"
           element={
             <RotaProtegida tipos={['EMPRESA']}>
-              <Placeholder titulo="Colaboradores" />
+              <Colaboradores titulo="Colaboradores" />
             </RotaProtegida>
           }
         />
@@ -143,7 +145,7 @@ function App() {
           path="/matriculas"
           element={
             <RotaProtegida tipos={['EMPRESA']}>
-              <Placeholder titulo="Matrículas" />
+              <Matriculas titulo="Matrículas" />
             </RotaProtegida>
           }
         />

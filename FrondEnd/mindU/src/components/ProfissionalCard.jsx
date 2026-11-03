@@ -34,10 +34,7 @@ export function ProfissionalCard({ profissional, onAgendar }) {
           ) : null}
         </div>
 
-        <button 
-          className="btn-agendar" 
-          onClick={() => onAgendar(profissional)}
-        >
+        <button className="btn-agendar" onClick={() => onAgendar(profissional)}>
           Agendar Consulta
         </button>
       </div>

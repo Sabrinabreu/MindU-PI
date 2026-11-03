@@ -67,7 +67,7 @@ export function SessaoPlanos() {
               ))}
             </ul>
 
-            <a href="#assinar" className={plan.isPopular ? 'btn-primary' : 'btn-plan'}>
+            <a href="#assinar" className={'btn-plan'}>
               {plan.buttonText}
             </a>
           </div>

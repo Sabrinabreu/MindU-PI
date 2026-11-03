@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { api, salvarSessao } from '../api';
 import '../css/login.css';
 
 const INITIAL_FORM_STATE = {
@@ -11,6 +12,7 @@ export function Login() {
   const [form, setForm] = useState(INITIAL_FORM_STATE);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,12 +22,27 @@ export function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErro('');
     setLoading(true);
+    
     try {
-      console.log('Login:', form);
-      // TODO: Integração com API
-      // await authService.login(form);
-      // navigate('/dashboard');
+      const res = await api('/v1/auth/login', {
+        method: 'POST',
+        body: form
+      });
+
+      salvarSessao({ 
+        token: res.token, 
+        tipo: res.tipo,
+        id: res.id || 'id-provisorio', 
+        nome: res.nome || form.email.split('@')[0],
+        foto: res.foto || ''
+      });
+
+      navigate('/perfil');
+      
+    } catch (err) {
+      setErro(err.message);
     } finally {
       setLoading(false);
     }
@@ -97,6 +114,8 @@ export function Login() {
               </Link>
             </div>
           </div>
+
+          {erro && <p className="form-erro">{erro}</p>}
 
           <button
             type="submit"

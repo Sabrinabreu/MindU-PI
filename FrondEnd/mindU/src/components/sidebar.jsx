@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { limparSessao } from '../api';
+import { limparSessao, getIniciais } from '../api';
 import { useTema } from '../hooks/useTema'; 
 import '../css/sidebar.css';
 
@@ -63,7 +63,7 @@ export function Sidebar({ usuario, isOpen, onClose }) {
             {usuario.foto ? (
               <img src={usuario.foto} alt={usuario.nome} />
             ) : (
-              <span className="material-symbols-outlined">person</span>
+              <span className="avatar-text">{getIniciais(usuario.nome)}</span>
             )}
           </div>
           <div className="sidebar-user-info">

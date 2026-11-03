@@ -22,20 +22,19 @@
 
 .plan-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
-/* Destaque para o plano Pro */
 .plan-card.popular {
-  border: 2px solid var(--accent, #6c5ce7);
-  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.15);
+  border: 2px solid var(--accent);
+  box-shadow: var(--shadow-accent);
 }
 
 .badge {
   position: absolute;
   top: -12px;
   align-self: center;
-  background-color: var(--accent, #6c5ce7);
+  background-color: var(--accent);
   color: #ffffff;
   font-size: 0.8rem;
   font-weight: 600;
@@ -63,13 +62,11 @@
 }
 
 .plan-price .period {
-  font-family: var(--fontBody);
   color: var(--text-m);
   font-size: 1rem;
 }
 
 .plan-description {
-  font-family: var(--fontBody);
   color: var(--text-s);
   font-size: 0.95rem;
   margin-bottom: 1.5rem;
@@ -84,13 +81,11 @@
 }
 
 .plan-features li {
-  font-family: var(--fontBody);
   color: var(--text);
   font-size: 0.95rem;
   margin-bottom: 0.8rem;
 }
 
-/* Botão secundário para os cards normais */
 .btn-plan {
   background-color: transparent;
   color: var(--primary);
@@ -98,27 +93,20 @@
   padding: 0.6rem 1rem;
   border-radius: 6px;
   text-decoration: none;
-  font-family: var(--fontBody);
   font-weight: 500;
   text-align: center;
   transition: all 0.2s ease;
 }
 
 .btn-plan:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg);
+  border-color: var(--primary);
 }
-
-:root[data-theme="dark"]
-  .btn-plan:hover {
-    background-color: #292b36;
-  }
-
 
 .plan-card .btn-primary {
   text-align: center;
 }
 
-/* Responsividade */
 @media (max-width: 900px) {
   .plans-container {
     flex-direction: column;

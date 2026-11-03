@@ -1,4 +1,3 @@
-/* ================= COMPONENTE CALENDÁRIO ================= */
 .calendar-container {
   flex: 1;
   padding: 2rem;
@@ -54,7 +53,6 @@
 
 .calendario-dia-semana {
   text-align: center;
-  font-family: var(--fontBody);
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-m);
@@ -70,7 +68,6 @@
   border: none;
   background: transparent;
   border-radius: 50%;
-  font-family: var(--fontBody);
   font-size: 0.95rem;
   color: var(--text);
   cursor: pointer;
@@ -78,8 +75,13 @@
   transition: all 0.2s ease;
 }
 
-.calendario-dia.vazio { cursor: default; }
-.calendario-dia:not(.vazio):hover { background-color: var(--bg); }
+.calendario-dia.vazio {
+  cursor: default;
+}
+
+.calendario-dia:not(.vazio):hover {
+  background-color: var(--bg);
+}
 
 .calendario-dia.hoje span {
   color: var(--accent);
@@ -90,10 +92,12 @@
   background-color: var(--primary);
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(61, 54, 109, 0.3);
+  box-shadow: var(--shadow-sm);
 }
 
-.calendario-dia.selecionado span { color: #fff; }
+.calendario-dia.selecionado span {
+  color: #fff;
+}
 
 .calendario-ponto {
   width: 5px;
@@ -104,4 +108,6 @@
   bottom: 20%;
 }
 
-.calendario-dia.selecionado .calendario-ponto { background-color: #fff; }
+.calendario-dia.selecionado .calendario-ponto {
+  background-color: #fff;
+}

@@ -6,7 +6,7 @@
   position: relative;
   width: 100%;
   padding: 7rem 1.5rem 6rem;
-  background: linear-gradient(135deg, #6c5ce7 0%, #4b2fc4 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, #4b2fc4 100%);
   color: #fff;
   overflow: hidden;
 }
@@ -15,8 +15,8 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient( circle at 15% 20%,  rgba(255, 255, 255, 0.12) 0%,  transparent 45%),
-    radial-gradient( circle at 85% 80%,  rgba(255, 255, 255, 0.1) 0%,  transparent 40%);
+  background-image: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 40%);
   pointer-events: none;
 }
 
@@ -28,9 +28,7 @@
 }
 
 .contato-banner h1 {
-  font-family: var(--fontHeading);
   font-size: 3rem;
-  font-weight: 500;
   color: #fff;
   margin: 0 0 1rem;
   letter-spacing: -0.02em;
@@ -38,7 +36,6 @@
 }
 
 .contato-banner p {
-  font-family: var(--fontBody);
   font-size: 1.15rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
@@ -52,9 +49,7 @@
   padding: 4rem 1.5rem;
 }
 
-/* ===========================
-   CARDS DE CONTATO
-   =========================== */
+/* CARDS DE CONTATO */
 .contato-canais {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -71,6 +66,7 @@
   color: inherit;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+
 .contato-card:hover {
   transform: translateY(-5px);
 }
@@ -92,27 +88,23 @@
 }
 
 .contato-card h3 {
-  font-family: var(--fontHeading);
   font-size: 1.1rem;
   color: var(--primary);
   margin: 0;
 }
 
 .contato-card-valor {
-  font-family: var(--fontBody);
   font-size: 0.95rem;
   color: var(--text-s);
   margin: 0 0 0.4rem;
 }
 
-/* ===========================
-   MAPA
-   =========================== */
+/* MAPA */
 .contato-mapa-wrapper {
   width: 100%;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(45, 35, 84, 0.15);
+  box-shadow: var(--shadow-lg);
   border: 1px solid var(--border);
   margin-bottom: 2.5rem;
 }
@@ -123,7 +115,6 @@
   z-index: 0;
 }
 
-/* Estilo do popup */
 .contato-mapa .leaflet-popup-content-wrapper {
   border-radius: 12px;
   font-family: var(--fontBody);
@@ -141,9 +132,7 @@
   font-size: 0.95rem;
 }
 
-/* ===========================
-   LISTA DE SEDES
-   =========================== */
+/* LISTA DE SEDES */
 .contato-sedes-lista {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -162,55 +151,34 @@
 }
 
 .contato-sede:hover {
-  border-color: var(--accent, #6c5ce7);
+  border-color: var(--accent);
   transform: translateY(-5px);
 }
 
 .contato-sede .material-symbols-outlined {
-  color: var(--accent, #6c5ce7);
+  color: var(--accent);
   font-size: 22px;
   margin-top: 2px;
   flex-shrink: 0;
 }
 
 .contato-sede h4 {
-  font-family: var(--fontHeading);
   font-size: 1rem;
   color: var(--primary);
   margin: 0 0 0.2rem;
 }
 
 .contato-sede p {
-  font-family: var(--fontBody);
   font-size: 0.9rem;
   color: var(--text-s);
   margin: 0;
   line-height: 1.4;
 }
 
-/*DARK MODE*/
-:root[data-theme="dark"]
-  
-  .contato-card-icon {
-    background: rgba(153, 146, 201, 0.15);
-    color: var(--primary);
-  }
-
-  .contato-card-cta {
-    color: var(--primary);
-  }
-
-  .contato-sede .material-symbols-outlined {
-    color: var(--primary);
-  }
-
-  .contato-sede:hover {
-    border-color: var(--primary);
-  }
-
-  .contato-mapa .leaflet-tile {
-    filter: brightness(0.85) contrast(1.05) saturate(0.9);
-  }
+/* DARK MODE ESPECÍFICO DO MAPA */
+:root[data-theme="dark"] .contato-mapa .leaflet-tile {
+  filter: brightness(0.85) contrast(1.05) saturate(0.9);
+}
 
 /* RESPONSIVIDADE */
 @media (max-width: 1024px) {

@@ -57,7 +57,6 @@ export function Agenda() {
   
   const [diaSelecionado, setDiaSelecionado] = useState(new Date());
 
-  // FILTRO (ID logado bate com o ID do profissional ou do cliente)
   const meusAgendamentos = MOCK_AGENDAMENTOS.filter((agendamento) => {
     if (isProfissional) {
       return agendamento.profissionalId === usuario.id;

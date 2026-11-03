@@ -16,11 +16,13 @@ export function getUsuario() {
   };
 }
 
-export function salvarSessao({ token, tipo, id, nome }) {
+export function salvarSessao({ token, tipo, id, nome, foto }) {
   if (token) localStorage.setItem("mindu_token", token);
   if (tipo) localStorage.setItem("mindu_tipo", tipo);
   if (id) localStorage.setItem("mindu_user_id", id);
   if (nome) localStorage.setItem("mindu_user_nome", nome);
+  if (foto) localStorage.setItem("mindu_user_foto", foto);
+  
   window.dispatchEvent(new Event('usuario-mudou'));
 }
 
@@ -29,6 +31,7 @@ export function limparSessao() {
   localStorage.removeItem("mindu_tipo");
   localStorage.removeItem("mindu_user_id");
   localStorage.removeItem("mindu_user_nome");
+  localStorage.removeItem("mindu_user_foto");
   window.dispatchEvent(new Event('usuario-mudou'));
 }
 
@@ -45,8 +48,6 @@ export async function api(path, { method = "GET", body, isFormData = false } = {
       body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     });
 
-    
-    
     if (!res.ok) {
       const erro = await res.json().catch(() => ({}));
       throw new Error(erro.erro || erro.message || `Erro ${res.status}`);
@@ -58,4 +59,13 @@ export async function api(path, { method = "GET", body, isFormData = false } = {
     }
     throw error;
   }
+}
+
+
+export function getIniciais(nome) {
+  if (!nome) return 'U';
+  const partes = nome.trim().split(' ').filter(Boolean);
+  if (partes.length === 0) return 'U';
+  if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
+  return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 }
