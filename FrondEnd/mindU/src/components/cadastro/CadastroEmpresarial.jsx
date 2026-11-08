@@ -298,7 +298,7 @@ export function CadastroEmpresarial({ onBack }) {
 
             <button
               type="button"
-              className="btn-gradient full"
+              className="btn-gradient"
               onClick={handleNextStep}
             >
               Continuar
@@ -468,7 +468,7 @@ export function CadastroEmpresarial({ onBack }) {
               </div>
             )}
 
-            <button type="submit" className="btn-gradient full" disabled={loading}>
+            <button type="submit" className="btn-gradient" disabled={loading}>
               {loading ? 'Enviando...' : 'Criar minha empresa'}
             </button>
           </>

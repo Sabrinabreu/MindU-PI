@@ -243,6 +243,10 @@
   color: #fff;
 }
 
+.cadastro-header h1 {
+  color: #fff;
+}
+
 .cadastro-header p {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.85);

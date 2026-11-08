@@ -1,235 +1,172 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUsuario, getIniciais } from '../api';
+import { getUsuario, getIniciais, api } from '../api';
 import '../css/perfil.css';
 
 const INITIAL = {
-  nome: '',
-  email: '',
-  telefone: '',
-  foto: '',
-  banner: '',
-  dataNascimento: '',
-  sexo: '',
-  tipo: '',
-  tags: [],
-  bio: '',
-  registro: '',
-  modalidade: '',
-  fotoCarteirinha: null,
-  razaoSocial: '',
-  nomeFantasia: '',
-  inscricaoEstadual: '',
-  cnpj: '',
-  responsavel: '',
-  plano: '',
-  empresa: '',
-  matricula: '',
-  cns: '',
-  nomeMae: '',
-  cep: '',
-  logradouro: '',
-  numero: '',
-  complemento: '',
-  bairro: '',
-  cidade: '',
-  estado: '',
-  senhaAtual: '',
-  novaSenha: '',
-  confirmarSenha: '',
+  nome: '', email: '', telefone: '', foto: '', banner: '',
+  dataNascimento: '', sexo: '', tipo: '', tags: [], bio: '', modalidade: '',
+  fotoCarteirinha: null, razaoSocial: '', nomeFantasia: '', inscricaoEstadual: '',
+  cnpj: '', responsavel: '', plano: '', empresa: '', matricula: '', cns: '', nomeMae: '',
+  cep: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', estado: '',
+  senhaAtual: '', novaSenha: '', confirmarSenha: '',
+  status: '', 
+  locais: [], 
+  disponibilidade: [] 
 };
 
-const MOCK = {
-  PROFISSIONAL: {
-    nome: 'Roberto Rocha',
-    email: 'roberto@mindu.com.br',
-    telefone: '(11) 98765-4321',
-    dataNascimento: '1985-05-12',
-    sexo: 'MASCULINO',
-    tipo: 'PSICOLOGO',
-    registro: 'CRP 06/123456',
-    modalidade: 'AMBOS',
-    bio: 'Psicólogo clínico com 10 anos de experiência em terapia cognitivo-comportamental. Especializado em ansiedade, burnout e desenvolvimento de carreira.',
-    tags: ['ansiedade', 'burnout', 'carreira'],
-    foto: 'https://i.pravatar.cc/300?img=13',
-    banner: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1400&q=80',
-    cep: '09510-100',
-    logradouro: 'Av. Goiás',
-    numero: '1200',
-    bairro: 'Centro',
-    cidade: 'São Caetano do Sul',
-    estado: 'SP',
-  },
-  EMPRESA: {
-    nome: 'TechNova Soluções',
-    nomeFantasia: 'TechNova',
-    razaoSocial: 'TechNova Soluções LTDA',
-    email: 'contato@technova.com.br',
-    telefone: '(11) 4000-1234',
-    cnpj: '00.000.000/0001-91',
-    inscricaoEstadual: '123.456.789.012',
-    responsavel: 'Carlos Mendes',
-    plano: 'Plano Pro',
-    foto: null,
-    banner: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1400&q=80',
-    cep: '09510-100',
-    logradouro: 'Av. Goiás',
-    numero: '1200',
-    complemento: 'Sala 302',
-    bairro: 'Centro',
-    cidade: 'São Caetano do Sul',
-    estado: 'SP',
-  },
-  BENEFICIARIO: {
-    nome: 'Maria Silva',
-    email: 'maria.silva@technova.com.br',
-    telefone: '(11) 91234-5678',
-    empresa: 'TechNova',
-    matricula: 'A1B2C3',
-    cns: '898 0012 3456 7890',
-    dataNascimento: '1995-03-20',
-    nomeMae: 'Ana Silva',
-    sexo: 'FEMININO',
-    foto: 'https://i.pravatar.cc/300?img=45',
-    banner: 'https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1400&q=80',
-  },
-};
-
-const TAGS_SUGERIDAS = [
-  'ansiedade', 'depressao', 'burnout', 'luto', 'relacionamentos',
-  'infantil', 'adolescentes', 'borderline', 'psicanalise', 'casais',
-  'autismo',
-];
-
-const TIPOS_PROFISSIONAL = [
-  { value: 'PSICOLOGO', label: 'Psicólogo(a)' },
-  { value: 'PSIQUIATRA', label: 'Psiquiatra' },
-  { value: 'TERAPEUTA', label: 'Terapeuta' },
-];
-
-const MODALIDADES = [
-  { value: 'ONLINE', label: 'Online' },
-  { value: 'PRESENCIAL', label: 'Presencial' },
-  { value: 'AMBOS', label: 'Ambos' },
-];
+const TAGS_SUGERIDAS = ['ansiedade', 'depressao', 'burnout', 'luto', 'relacionamentos', 'infantil', 'adolescentes', 'borderline', 'psicanalise', 'casais', 'autismo'];
+const TIPOS_PROFISSIONAL = [{ value: 'PSICOLOGO', label: 'Psicólogo(a)' }, { value: 'PSIQUIATRA', label: 'Psiquiatra' }, { value: 'TERAPEUTA', label: 'Terapeuta' }];
+const DIAS_SEMANA = ['SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO'];
 
 export function Perfil() {
   const navigate = useNavigate();
   const [usuario, setUsuario] = useState(null);
   const [form, setForm] = useState(INITIAL);
   const [loading, setLoading] = useState(true);
+  const [salvando, setSalvando] = useState(false);
+  const [isOnboarding, setIsOnboarding] = useState(false);
+
+  // Estados temporários para adicionar Local e Disponibilidade (Profissional)
+  const [novoLocal, setNovoLocal] = useState({ modalidade: 'VIRTUAL' });
+  const [novaDispo, setNovaDispo] = useState({ diaSemana: 'SEGUNDA', horaInicio: '08:00', horaFim: '12:00' });
 
   useEffect(() => {
     const u = getUsuario();
     if (!u) { navigate('/login'); return; }
     setUsuario(u);
-    
-    const mockData = MOCK[u.tipo] || {};
-    setForm({ ...INITIAL, ...mockData });
-    
-    // Sincroniza a foto e nome com a Navbar/Sidebar
-    if (mockData.foto) {
-      localStorage.setItem('mindu_user_foto', mockData.foto);
-      localStorage.setItem('mindu_user_nome', mockData.nome);
-      window.dispatchEvent(new Event('usuario-mudou'));
-    }
-    
-    setLoading(false);
-  }, [navigate]);
 
-  useEffect(() => {
-    return () => {
-      if (form.foto && form.foto.startsWith('blob:')) {
-        URL.revokeObjectURL(form.foto);
-      }
-      if (form.banner && form.banner.startsWith('blob:')) {
-        URL.revokeObjectURL(form.banner);
+    const isBloqueado = localStorage.getItem('mindu_perfil_incompleto') === 'true';
+    setIsOnboarding(isBloqueado);
+
+    const fetchPerfil = async () => {
+      try {
+        let endpoint = '/v1/clientes/me';
+        if (u.tipo === 'EMPRESA') endpoint = '/v1/empresas/me';
+        if (u.tipo === 'PROFISSIONAL') endpoint = '/v1/profissionais/conta/perfil';
+
+        const dados = await api(endpoint);
+        
+        setForm({
+          ...INITIAL,
+          ...dados,
+          nome: dados.nome || dados.nomeFantasia || dados.razaoSocial,
+          cns: dados.cns || '', 
+          dataNascimento: dados.dataNascimento || '',
+          nomeMae: dados.nomeMae || '', 
+          sexo: dados.genero || dados.sexo || '',
+          status: dados.status || '',
+          locais: dados.locaisAtendimento || [],
+          disponibilidade: dados.disponibilidades || []
+        });
+      } catch (err) {
+        console.error('Erro ao buscar perfil', err);
+      } finally {
+        setLoading(false);
       }
     };
-  }, [form.foto, form.banner]);
+
+    fetchPerfil();
+  }, [navigate]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files && files[0]) {
-      setForm((p) => ({ ...p, [name]: URL.createObjectURL(files[0]) }));
-      return;
-    }
+    const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
   };
 
-  const handleCepBlur = async (e) => {
-    const cep = e.target.value.replace(/\D/g, '');
-    if (cep.length !== 8) return;
-    try {
-      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = await res.json();
-      if (data.erro) return;
-      setForm((p) => ({
-        ...p,
-        logradouro: data.logradouro || '',
-        bairro: data.bairro || '',
-        cidade: data.localidade || '',
-        estado: data.uf || '',
-      }));
-    } catch (err) { console.error(err); }
-  };
-
   const toggleArrayItem = (campo, valor) => {
-    setForm((p) => ({
-      ...p,
-      [campo]: p[campo].includes(valor)
-        ? p[campo].filter((v) => v !== valor)
-        : [...p[campo], valor],
-    }));
+    setForm((p) => ({ ...p, [campo]: p[campo].includes(valor) ? p[campo].filter((v) => v !== valor) : [...p[campo], valor] }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (form.novaSenha && form.novaSenha !== form.confirmarSenha) {
-      alert('As senhas não coincidem.');
-      return;
+  // --- FUNÇÕES DO PROFISSIONAL ---
+  const handleAddLocal = () => {
+    if (novoLocal.modalidade === 'PRESENCIAL' && (!novoLocal.cep || !novoLocal.cidade)) {
+      return alert('Para atendimento presencial, preencha o CEP e a Cidade.');
     }
-    console.log('Salvar perfil:', { tipo: usuario.tipo, form });
+    setForm(p => ({ ...p, locais: [...p.locais, novoLocal] }));
+    setNovoLocal({ modalidade: 'VIRTUAL' });
+  };
+
+  const handleAddDispo = () => {
+    setForm(p => ({ ...p, disponibilidade: [...p.disponibilidade, novaDispo] }));
+  };
+
+  // --- SUBMIT ---
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSalvando(true);
+    
+    try {
+      if (form.novaSenha) {
+        if (form.novaSenha !== form.confirmarSenha) throw new Error('As senhas não coincidem.');
+        await api('/v1/auth/senha', { method: 'PUT', body: { senhaAtual: form.senhaAtual, novaSenha: form.novaSenha } });
+      }
+
+      if (usuario.tipo === 'BENEFICIARIO') {
+        await api('/v1/clientes/me', {
+          method: 'PATCH',
+          body: { nome: form.nome, email: form.email, telefone: form.telefone, cep: form.cep, logradouro: form.logradouro, numero: form.numero, bairro: form.bairro, cidade: form.cidade, estado: form.estado }
+        });
+        
+        if (form.status === 'APROVADO' && form.cns) {
+           await api('/v1/clientes/me/dados-sensiveis', {
+             method: 'PATCH',
+             body: { cns: form.cns, dataNascimento: form.dataNascimento, nomeMae: form.nomeMae, genero: form.sexo }
+           });
+        }
+      } 
+      else if (usuario.tipo === 'PROFISSIONAL') {
+        await api(`/v1/profissionais/${usuario.id}`, {
+          method: 'PATCH',
+          body: { nome: form.nome, email: form.email, telefone: form.telefone, bio: form.bio, tipo: form.tipo, tags: form.tags }
+        });
+
+        for (const local of form.locais) {
+          if (!local.id) { 
+             await api(`/v1/profissionais/${usuario.id}/locais`, { method: 'POST', body: local });
+          }
+        }
+
+        if (form.disponibilidade.length > 0) {
+           await api(`/v1/profissionais/${usuario.id}/disponibilidade`, { method: 'PUT', body: form.disponibilidade });
+        }
+      }
+
+      localStorage.removeItem('mindu_perfil_incompleto');
+      alert('Perfil atualizado com sucesso!');
+      
+      if (isOnboarding) {
+        navigate('/agenda'); 
+      }
+      
+    } catch (err) {
+      alert('Erro ao salvar: ' + err.message);
+    } finally {
+      setSalvando(false);
+    }
   };
 
   if (loading || !usuario) {
-    return (
-      <div className="perfil-page">
-        <div className="loading">
-          <span className="material-symbols-outlined girando">progress_activity</span>
-          <p>Carregando…</p>
-        </div>
-      </div>
-    );
+    return <div className="perfil-page"><div className="loading"><span className="material-symbols-outlined girando">progress_activity</span><p>Carregando…</p></div></div>;
   }
 
   return (
     <div className="perfil-page">
       <form className="perfil-card" onSubmit={handleSubmit}>
-        <div className="perfil-capa">
-          <div
-            className="perfil-capa-banner"
-            style={{ backgroundImage: `url(${form.banner})` }}
-          >
-            <div className="perfil-capa-pattern" />
-            <label className="perfil-edit-btn" title="Alterar capa">
-              <span className="material-symbols-outlined">edit</span>
-              <input type="file" accept="image/*" name="banner" onChange={handleChange} hidden />
-            </label>
+        
+        {isOnboarding && (
+          <div style={{ background: '#fef08a', color: '#854d0e', padding: '1rem', textAlign: 'center', fontWeight: 'bold' }}>
+            ⚠️ Complete seu perfil para liberar o acesso total à plataforma!
           </div>
+        )}
+
+        <div className="perfil-capa">
+          <div className="perfil-capa-banner" style={{ backgroundImage: `url(${form.banner})` }}><div className="perfil-capa-pattern" /></div>
         </div>
 
         <div className="perfil-capa-info">
           <div className="perfil-capa-avatar">
-            {form.foto ? (
-              <img src={form.foto} alt={form.nome} />
-            ) : (
-              <div className="avatar-text-grande">{getIniciais(form.nome)}</div>
-            )}
-            <label className="perfil-edit-avatar-btn" title="Alterar logotipo">
-              <span className="material-symbols-outlined">photo_camera</span>
-              <input type="file" accept="image/*" name="foto" onChange={handleChange} hidden />
-            </label>
+            {form.foto ? <img src={form.foto} alt={form.nome} /> : <div className="avatar-text-grande">{getIniciais(form.nome)}</div>}
           </div>
           <div className="perfil-capa-texto">
             <h1>{form.nome || 'Sem nome'}</h1>
@@ -239,29 +176,28 @@ export function Perfil() {
 
         <div className="perfil-body">
           {usuario.tipo === 'PROFISSIONAL' && (
-            <PerfilProfissional form={form} onChange={handleChange} onCepBlur={handleCepBlur} toggle={toggleArrayItem} />
+             <PerfilProfissional 
+               form={form} onChange={handleChange} toggle={toggleArrayItem} 
+               novoLocal={novoLocal} setNovoLocal={setNovoLocal} handleAddLocal={handleAddLocal}
+               novaDispo={novaDispo} setNovaDispo={setNovaDispo} handleAddDispo={handleAddDispo}
+             />
           )}
-          {usuario.tipo === 'EMPRESA' && (
-            <PerfilEmpresa form={form} onChange={handleChange} onCepBlur={handleCepBlur} />
-          )}
-          {usuario.tipo === 'BENEFICIARIO' && (
-            <PerfilCliente form={form} onChange={handleChange} />
-          )}
+          {usuario.tipo === 'EMPRESA' && <PerfilEmpresa form={form} onChange={handleChange} />}
+          
+          {usuario.tipo === 'BENEFICIARIO' && <PerfilCliente form={form} onChange={handleChange} />}
 
-          <Secao icon="lock" iconColor="icon-amarelo" titulo="Segurança" subtitulo="Alterar senha de acesso">
-            <Campo label="Senha atual" name="senhaAtual" type="password" value={form.senhaAtual} onChange={handleChange} placeholder="••••••••" />
-            <Campo label="Nova senha" name="novaSenha" type="password" value={form.novaSenha} onChange={handleChange} placeholder="Mínimo 8 caracteres" minLength={8} />
-            <Campo label="Confirmar nova senha" name="confirmarSenha" type="password" value={form.confirmarSenha} onChange={handleChange} placeholder="Repita a nova senha" full />
+          <Secao icon="lock" iconColor="icon-amarelo" titulo="Segurança" subtitulo="Alterar senha (opcional agora)">
+            <Campo label="Senha atual" name="senhaAtual" type="password" value={form.senhaAtual} onChange={handleChange} />
+            <Campo label="Nova senha" name="novaSenha" type="password" value={form.novaSenha} onChange={handleChange} />
+            <Campo label="Confirmar nova senha" name="confirmarSenha" type="password" value={form.confirmarSenha} onChange={handleChange} full />
           </Secao>
         </div>
 
         <div className="perfil-actions">
-          <button type="button" className="btn-cancelar" onClick={() => navigate('/')}>
-            Cancelar
-          </button>
-          <button type="submit" className="btn-salvar btn-gradient">
+          <button type="button" className="btn-cancelar" onClick={() => navigate('/')}>Cancelar</button>
+          <button type="submit" className="btn-salvar btn-gradient" disabled={salvando}>
             <span className="material-symbols-outlined">save</span>
-            Salvar alterações
+            {salvando ? 'Salvando...' : (isOnboarding ? 'Salvar e Liberar Acesso' : 'Salvar alterações')}
           </button>
         </div>
       </form>
@@ -269,104 +205,147 @@ export function Perfil() {
   );
 }
 
-/* Perfis por tipo */
-function PerfilProfissional({ form, onChange, onCepBlur, toggle }) {
+function PerfilProfissional({ form, onChange, toggle, novoLocal, setNovoLocal, handleAddLocal, novaDispo, setNovaDispo, handleAddDispo }) {
   return (
     <>
-      <Secao icon="person" iconColor="icon-roxo" titulo="Dados pessoais">
-        <Campo label="Nome completo *" name="nome" value={form.nome} onChange={onChange} />
+      <Secao icon="person" iconColor="icon-roxo" titulo="Dados Pessoais *">
+        <Campo label="Nome *" name="nome" value={form.nome} onChange={onChange} />
         <Campo label="E-mail *" name="email" type="email" value={form.email} onChange={onChange} />
-        <Campo label="Data de nascimento *" name="dataNascimento" type="date" value={form.dataNascimento} onChange={onChange} />
-        <SelectCampo label="Sexo *" name="sexo" value={form.sexo} onChange={onChange}
-          options={[['FEMININO', 'Feminino'], ['MASCULINO', 'Masculino'], ['OUTRO', 'Outro'], ['PREFIRO_NAO_INFORMAR', 'Prefiro não informar']]} />
         <Campo label="Telefone *" name="telefone" value={form.telefone} onChange={onChange} />
-        <SelectCampo label="Tipo de profissional *" name="tipo" value={form.tipo} onChange={onChange}
-          options={TIPOS_PROFISSIONAL.map((t) => [t.value, t.label])} />
-        <Campo label="Registro profissional (CRP/CRM) *" name="registro" value={form.registro} onChange={onChange} placeholder="Ex: CRP 06/123456" />
+        <SelectCampo label="Tipo de profissional *" name="tipo" value={form.tipo} onChange={onChange} options={TIPOS_PROFISSIONAL.map((t) => [t.value, t.label])} />
       </Secao>
-
-      <Secao icon="psychology" iconColor="icon-azul" titulo="Sobre você" subtitulo={`${form.bio.length}/300 caracteres`}>
+      
+      <Secao icon="psychology" iconColor="icon-azul" titulo="Sobre você *">
         <div className="perfil-field full">
-          <label htmlFor="bio">Apresentação</label>
-          <textarea id="bio" name="bio" value={form.bio} onChange={onChange} maxLength={300} rows={4} placeholder="Fale brevemente sobre sua formação, experiência e abordagem terapêutica." />
+          <label>Apresentação (Bio) *</label>
+          <textarea name="bio" value={form.bio} onChange={onChange} maxLength={300} rows={4} required />
         </div>
       </Secao>
 
-      <Secao icon="sell" iconColor="icon-rosa" titulo="Especialidades" subtitulo="Clique para marcar/desmarcar">
+      <Secao icon="sell" iconColor="icon-rosa" titulo="Especialidades *">
         <div className="perfil-tags full">
           {TAGS_SUGERIDAS.map((tag) => (
-            <button key={tag} type="button" className={`perfil-tag ${form.tags.includes(tag) ? 'active' : ''}`} onClick={() => toggle('tags', tag)}>
-              {tag}
-            </button>
+            <button key={tag} type="button" className={`perfil-tag ${form.tags.includes(tag) ? 'active' : ''}`} onClick={() => toggle('tags', tag)}>{tag}</button>
           ))}
         </div>
       </Secao>
 
-      <Secao icon="devices" iconColor="icon-verde" titulo="Modalidade de atendimento" subtitulo="Como você atende seus pacientes">
-        <div className="perfil-tags full">
-          {MODALIDADES.map((m) => (
-            <button key={m.value} type="button" className={`perfil-tag ${form.modalidade === m.value ? 'active' : ''}`} onClick={() => onChange({ target: { name: 'modalidade', value: m.value } })}>
-              {m.label}
-            </button>
-          ))}
-        </div>
-      </Secao>
-
-      <Secao icon="location_on" iconColor="icon-laranja" titulo="Endereço de atendimento" subtitulo="Opcional se você atende apenas online">
-        <EnderecoFields form={form} onChange={onChange} onCepBlur={onCepBlur} />
-      </Secao>
-
-      <Secao icon="badge" iconColor="icon-roxo" titulo="Documento profissional" subtitulo="Verificação de CRP/CRM">
+      <Secao icon="location_on" iconColor="icon-verde" titulo="Locais de Atendimento *" subtitulo="Onde você atende?">
         <div className="perfil-field full">
-          <label className="perfil-upload">
-            <input type="file" name="fotoCarteirinha" accept="image/*,.pdf" onChange={onChange} />
-            <span className="material-symbols-outlined">cloud_upload</span>
-            <span>{form.fotoCarteirinha?.name || 'Clique para enviar (JPG, PNG ou PDF)'}</span>
-          </label>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
+            <select value={novoLocal.modalidade} onChange={(e) => setNovoLocal({ ...novoLocal, modalidade: e.target.value })}>
+              <option value="VIRTUAL">Online</option>
+              <option value="PRESENCIAL">Presencial</option>
+            </select>
+            {novoLocal.modalidade === 'PRESENCIAL' && (
+               <input className="glass-input" placeholder="CEP" value={novoLocal.cep || ''} onChange={e => setNovoLocal({...novoLocal, cep: e.target.value})} />
+            )}
+            <button type="button" className="btn-outline" onClick={handleAddLocal}>Adicionar</button>
+          </div>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {form.locais.map((l, i) => (
+              <li key={i} style={{ padding: '5px', background: 'var(--bg)', marginBottom: '5px', borderRadius: '5px' }}>
+                ✓ Atendimento {l.modalidade === 'VIRTUAL' ? 'Online' : 'Presencial'}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Secao>
+
+      <Secao icon="schedule" iconColor="icon-laranja" titulo="Disponibilidade *" subtitulo="Quando você atende?">
+        <div className="perfil-field full">
+          <div style={{ display: 'flex', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+            <select value={novaDispo.diaSemana} onChange={(e) => setNovaDispo({ ...novaDispo, diaSemana: e.target.value })}>
+              {DIAS_SEMANA.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+            <input type="time" value={novaDispo.horaInicio} onChange={e => setNovaDispo({...novaDispo, horaInicio: e.target.value})} />
+            <input type="time" value={novaDispo.horaFim} onChange={e => setNovaDispo({...novaDispo, horaFim: e.target.value})} />
+            <button type="button" className="btn-outline" onClick={handleAddDispo}>Adicionar</button>
+          </div>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {form.disponibilidade.map((d, i) => (
+              <li key={i} style={{ padding: '5px', background: 'var(--bg)', marginBottom: '5px', borderRadius: '5px' }}>
+                ✓ {d.diaSemana} das {d.horaInicio} às {d.horaFim}
+              </li>
+            ))}
+          </ul>
         </div>
       </Secao>
     </>
   );
 }
 
-function PerfilEmpresa({ form, onChange, onCepBlur }) {
+function PerfilEmpresa({ form, onChange }) {
   return (
     <>
       <Secao icon="apartment" iconColor="icon-roxo" titulo="Dados da empresa">
-        <Campo label="Razão social *" name="razaoSocial" value={form.razaoSocial} onChange={onChange} full />
-        <Campo label="Nome fantasia *" name="nomeFantasia" value={form.nomeFantasia} onChange={onChange} />
-        <Campo label="CNPJ *" name="cnpj" value={form.cnpj} onChange={onChange} />
-        <Campo label="Inscrição estadual" name="inscricaoEstadual" value={form.inscricaoEstadual} onChange={onChange} />
-        <Campo label="E-mail corporativo *" name="email" type="email" value={form.email} onChange={onChange} />
-        <Campo label="Telefone comercial *" name="telefone" value={form.telefone} onChange={onChange} />
-        <Campo label="Responsável (RH) *" name="responsavel" value={form.responsavel} onChange={onChange} />
-        <Campo label="Plano atual" name="plano" value={form.plano} onChange={onChange} readOnly />
+        <Campo label="Razão social" name="razaoSocial" value={form.razaoSocial} readOnly />
+        <Campo label="Nome fantasia" name="nomeFantasia" value={form.nomeFantasia} onChange={onChange} />
+        <Campo label="CNPJ" name="cnpj" value={form.cnpj} readOnly />
+        <Campo label="Responsável (RH)" name="responsavel" value={form.responsavel} onChange={onChange} />
+        <Campo label="E-mail corporativo" name="email" type="email" value={form.email} onChange={onChange} />
+        <Campo label="Telefone comercial" name="telefone" value={form.telefone} onChange={onChange} />
+        <Campo label="Plano atual" name="plano" value={form.plano} readOnly />
       </Secao>
-
       <Secao icon="location_on" iconColor="icon-laranja" titulo="Endereço da sede">
-        <EnderecoFields form={form} onChange={onChange} onCepBlur={onCepBlur} />
+        <Campo label="CEP" name="cep" value={form.cep} onChange={onChange} />
+        <Campo label="Cidade" name="cidade" value={form.cidade} onChange={onChange} />
+        <Campo label="Logradouro" name="logradouro" value={form.logradouro} onChange={onChange} full />
+        <Campo label="Número" name="numero" value={form.numero} onChange={onChange} />
+        <Campo label="Complemento" name="complemento" value={form.complemento} onChange={onChange} />
+        <Campo label="Bairro" name="bairro" value={form.bairro} onChange={onChange} />
+        <Campo label="UF" name="estado" value={form.estado} onChange={onChange} placeholder="SP" />
       </Secao>
     </>
   );
 }
 
 function PerfilCliente({ form, onChange }) {
-  const verificado = Boolean(form.cns);
+  const isAprovado = form.status === 'APROVADO';
+  const isRejeitado = form.status === 'REJEITADO';
+
   return (
     <>
-      <Secao icon="person" iconColor="icon-roxo" titulo="Dados de vínculo" subtitulo="Fornecidos pela sua empresa">
-        <Campo label="Nome completo" name="nome" value={form.nome} onChange={onChange} readOnly />
-        <Campo label="E-mail" name="email" value={form.email} onChange={onChange} readOnly />
-        <Campo label="Empresa" name="empresa" value={form.empresa} onChange={onChange} readOnly />
-        <Campo label="Matrícula" name="matricula" value={form.matricula} onChange={onChange} readOnly />
+      <Secao icon="person" iconColor="icon-roxo" titulo="Seus Dados Pessoais">
+        <Campo label="Nome completo *" name="nome" value={form.nome} onChange={onChange} />
+        <Campo label="E-mail *" name="email" value={form.email} readOnly />
+        <Campo label="Telefone" name="telefone" value={form.telefone} onChange={onChange} />
       </Secao>
 
-      <Secao icon={verificado ? 'verified_user' : 'pending'} iconColor={verificado ? 'icon-verde' : 'icon-amarelo'} titulo="Informações de saúde" subtitulo={verificado ? 'Dados verificados' : 'Aguardando verificação'}>
-        <Campo label="CNS (Cartão Nacional de Saúde)" name="cns" value={form.cns} onChange={onChange} placeholder="000 0000 0000 0000" full />
-        <Campo label="Data de nascimento" name="dataNascimento" type="date" value={form.dataNascimento} onChange={onChange} />
-        <SelectCampo label="Sexo" name="sexo" value={form.sexo} onChange={onChange}
-          options={[['FEMININO', 'Feminino'], ['MASCULINO', 'Masculino'], ['OUTRO', 'Outro'], ['PREFIRO_NAO_INFORMAR', 'Prefiro não informar']]} />
-        <Campo label="Nome completo da mãe" name="nomeMae" value={form.nomeMae} onChange={onChange} full />
+      {/* AVISO DE REJEITADO */}
+      {isRejeitado ? (
+        <Secao icon="cancel" iconColor="icon-rosa" titulo="Cadastro Recusado">
+          <p style={{ padding: '1rem', color: '#b91c1c', background: '#fee2e2', borderRadius: '8px', border: '1px solid #fecaca' }}>
+            Seu cadastro foi recusado pelo RH da sua empresa. Entre em contato com o departamento pessoal para mais informações.
+          </p>
+        </Secao>
+      ) : (
+        <Secao 
+          icon={isAprovado ? "verified_user" : "pending"} 
+          iconColor={isAprovado ? 'icon-verde' : 'icon-amarelo'} 
+          titulo="Informações de Saúde *" 
+          subtitulo={isAprovado ? 'Dados obrigatórios para agendar' : 'Aguardando aprovação do RH'}
+        >
+          {isAprovado ? (
+            <>
+              <Campo label="CNS (SUS) *" name="cns" value={form.cns} onChange={onChange} placeholder="000 0000 0000 0000" full />
+              <Campo label="Data de Nascimento *" name="dataNascimento" type="date" value={form.dataNascimento} onChange={onChange} />
+              <SelectCampo label="Gênero *" name="sexo" value={form.sexo} onChange={onChange} options={[['FEMININO', 'Feminino'], ['MASCULINO', 'Masculino'], ['OUTRO', 'Outro']]} />
+              <Campo label="Nome completo da Mãe *" name="nomeMae" value={form.nomeMae} onChange={onChange} full />
+            </>
+          ) : (
+            <p style={{ padding: '1rem', color: 'var(--text-s)' }}>Você poderá preencher os dados médicos assim que o RH da sua empresa aprovar seu cadastro.</p>
+          )}
+        </Secao>
+      )}
+
+      <Secao icon="location_on" iconColor="icon-laranja" titulo="Endereço">
+        <Campo label="CEP" name="cep" value={form.cep} onChange={onChange} />
+        <Campo label="Cidade" name="cidade" value={form.cidade} onChange={onChange} />
+        <Campo label="Logradouro" name="logradouro" value={form.logradouro} onChange={onChange} full />
+        <Campo label="Número" name="numero" value={form.numero} onChange={onChange} />
+        <Campo label="Bairro" name="bairro" value={form.bairro} onChange={onChange} />
+        <Campo label="UF" name="estado" value={form.estado} onChange={onChange} />
       </Secao>
     </>
   );
@@ -376,24 +355,19 @@ function Secao({ icon, iconColor = 'icon-roxo', titulo, subtitulo, children }) {
   return (
     <div className="perfil-secao">
       <div className="perfil-secao-head">
-        <div className={`perfil-secao-icon ${iconColor}`}>
-          <span className="material-symbols-outlined">{icon}</span>
-        </div>
-        <div className="perfil-secao-title">
-          <h3>{titulo}</h3>
-          {subtitulo && <p>{subtitulo}</p>}
-        </div>
+        <div className={`perfil-secao-icon ${iconColor}`}><span className="material-symbols-outlined">{icon}</span></div>
+        <div className="perfil-secao-title"><h3>{titulo}</h3>{subtitulo && <p>{subtitulo}</p>}</div>
       </div>
       <div className="perfil-grid">{children}</div>
     </div>
   );
 }
 
-function Campo({ label, name, value, onChange, type = 'text', full, readOnly, placeholder, minLength }) {
+function Campo({ label, name, value, onChange, type = 'text', full, readOnly, placeholder }) {
   return (
     <div className={`perfil-field ${full ? 'full' : ''}`}>
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} value={value || ''} onChange={onChange} placeholder={placeholder} readOnly={readOnly} minLength={minLength} />
+      <label>{label}</label>
+      <input name={name} type={type} value={value || ''} onChange={onChange} readOnly={readOnly} placeholder={placeholder} />
     </div>
   );
 }
@@ -401,8 +375,8 @@ function Campo({ label, name, value, onChange, type = 'text', full, readOnly, pl
 function SelectCampo({ label, name, value, onChange, options }) {
   return (
     <div className="perfil-field">
-      <label htmlFor={name}>{label}</label>
-      <select id={name} name={name} value={value || ''} onChange={onChange}>
+      <label>{label}</label>
+      <select name={name} value={value || ''} onChange={onChange}>
         <option value="" disabled>Selecione</option>
         {options.map(([v, l]) => (<option key={v} value={v}>{l}</option>))}
       </select>
@@ -410,27 +384,9 @@ function SelectCampo({ label, name, value, onChange, options }) {
   );
 }
 
-function EnderecoFields({ form, onChange, onCepBlur }) {
-  return (
-    <>
-      <Campo label="CEP" name="cep" value={form.cep} onChange={onChange} onBlur={onCepBlur} placeholder="00000-000" />
-      <Campo label="Cidade" name="cidade" value={form.cidade} onChange={onChange} />
-      <Campo label="Logradouro" name="logradouro" value={form.logradouro} onChange={onChange} full />
-      <Campo label="Número" name="numero" value={form.numero} onChange={onChange} />
-      <Campo label="Complemento" name="complemento" value={form.complemento} onChange={onChange} />
-      <Campo label="Bairro" name="bairro" value={form.bairro} onChange={onChange} />
-      <Campo label="UF" name="estado" value={form.estado} onChange={onChange} placeholder="SP" />
-    </>
-  );
-}
-
 function legendaTipo(tipo, form) {
-  if (tipo === 'PROFISSIONAL') {
-    return { PSICOLOGO: 'Psicólogo(a)', PSIQUIATRA: 'Psiquiatra', TERAPEUTA: 'Terapeuta' }[form.tipo] || 'Profissional';
-  }
-  if (tipo === 'EMPRESA') {
-    return 'Empresa';
-  }
-  if (tipo === 'BENEFICIARIO') return form.empresa || 'Beneficiário';
+  if (tipo === 'PROFISSIONAL') return { PSICOLOGO: 'Psicólogo(a)', PSIQUIATRA: 'Psiquiatra', TERAPEUTA: 'Terapeuta' }[form.tipo] || 'Profissional';
+  if (tipo === 'EMPRESA') return 'Empresa';
+  if (tipo === 'BENEFICIARIO') return form.status === 'APROVADO' ? 'Beneficiário Ativo' : (form.status === 'REJEITADO' ? 'Cadastro Recusado' : 'Aguardando Aprovação');
   return '';
 }

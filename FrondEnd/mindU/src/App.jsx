@@ -81,6 +81,7 @@ function App() {
             </RotaProtegida>
           } 
         />
+
         <Route
           path="/historico"
           element={
@@ -103,23 +104,7 @@ function App() {
           path="/consultas"
           element={
             <RotaProtegida tipos={['PROFISSIONAL']}>
-              <Placeholder titulo="Minhas Consultas" />
-            </RotaProtegida>
-          }
-        />
-        <Route
-          path="/disponibilidade"
-          element={
-            <RotaProtegida tipos={['PROFISSIONAL']}>
-              <Placeholder titulo="Disponibilidade" />
-            </RotaProtegida>
-          }
-        />
-        <Route
-          path="/locais"
-          element={
-            <RotaProtegida tipos={['PROFISSIONAL']}>
-              <Placeholder titulo="Meus Locais" />
+              <Historico titulo="Meus Atendimentos" />
             </RotaProtegida>
           }
         />
@@ -146,14 +131,6 @@ function App() {
           element={
             <RotaProtegida tipos={['EMPRESA']}>
               <Matriculas titulo="Matrículas" />
-            </RotaProtegida>
-          }
-        />
-        <Route
-          path="/relatorios"
-          element={
-            <RotaProtegida tipos={['EMPRESA', 'ADMIN']}>
-              <Placeholder titulo="Relatórios" />
             </RotaProtegida>
           }
         />

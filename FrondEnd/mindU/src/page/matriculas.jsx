@@ -1,32 +1,41 @@
 import React, { useState } from 'react';
+import { api } from '../api';
 import '../css/gestao.css';
 
-const MOCK_MATRICULAS = [
-  { id: 1, codigo: 'A1B2C3', status: 'DISPONIVEL', data: '01/10/2026', usadoPor: null },
-  { id: 2, codigo: 'D4E5F6', status: 'UTILIZADA', data: '02/10/2026', usadoPor: 'Maria Silva' },
-  { id: 3, codigo: 'G7H8I9', status: 'DISPONIVEL', data: '05/10/2026', usadoPor: null },
-];
-
 export function Matriculas() {
-  const [matriculas, setMatriculas] = useState(MOCK_MATRICULAS);
+  const [matriculas, setMatriculas] = useState([]);
   const [copiado, setCopiado] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [quantidade, setQuantidade] = useState(5);
 
-  const gerarMatriculas = () => {
-    const quantidade = parseInt(prompt("Quantas matrículas deseja gerar?", "5"));
-    if (!quantidade || quantidade <= 0) return;
+  const abrirModal = () => {
+    setQuantidade(5);
+    setIsModalOpen(true);
+  };
 
-    const novas = Array.from({ length: quantidade }).map((_, i) => {
-      const codigo = Math.random().toString(36).substring(2, 8).toUpperCase();
-      return {
-        id: Date.now() + i,
-        codigo,
-        status: 'DISPONIVEL',
-        data: new Date().toLocaleDateString('pt-BR'),
-        usadoPor: null
-      };
-    });
+  const fecharModal = () => setIsModalOpen(false);
 
-    setMatriculas(prev => [...novas, ...prev]);
+  const confirmarGeracao = async (e) => {
+    e.preventDefault();
+    const qtd = parseInt(quantidade);
+    
+    if (!qtd || qtd <= 0) {
+      return alert('Por favor, insira um número válido maior que zero.');
+    }
+
+    setLoading(true);
+    try {
+      const res = await api(`/v1/empresas/me/matriculas?quantidade=${qtd}`, { method: 'POST' });
+      const novas = res.map(m => ({ ...m, data: new Date().toLocaleDateString('pt-BR') }));
+      setMatriculas(prev => [...novas, ...prev]);
+      
+      fecharModal();
+    } catch (err) {
+      alert('Erro ao gerar: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const copiarCodigo = (codigo) => {
@@ -42,7 +51,7 @@ export function Matriculas() {
           <h1>Matrículas</h1>
           <p>Gere códigos de acesso para convidar seus colaboradores!</p>
         </div>
-        <button className="btn-primary" onClick={gerarMatriculas}>
+        <button className="btn-primary" onClick={abrirModal}>
           <span className="material-symbols-outlined">add</span>
           Gerar Matrículas
         </button>
@@ -50,7 +59,7 @@ export function Matriculas() {
 
       <div className="gestao-aviso glass-card">
         <span className="material-symbols-outlined">info</span>
-        <p>Copie o código abaixo e envie para o colaborador. No momento do cadastro, ele deve inserir este código e selecionar a sua empresa.</p>
+        <p>Copie o código abaixo e envie para o colaborador. No momento do cadastro, ele deve inserir este código.</p>
       </div>
 
       <div className="gestao-tabela-container glass-card">
@@ -66,25 +75,17 @@ export function Matriculas() {
           <tbody>
             {matriculas.map(mat => (
               <tr key={mat.id}>
-                <td>
-                  <strong className="codigo-matricula">{mat.codigo}</strong>
-                </td>
+                <td><strong className="codigo-matricula">{mat.codigo}</strong></td>
                 <td>{mat.data}</td>
                 <td>
-                  <span className={`status-badge ${mat.status.toLowerCase()}`}>
-                    {mat.status === 'DISPONIVEL' ? 'Disponível' : 'Utilizada'}
+                  <span className={`status-badge ${mat.utilizada ? 'utilizada' : 'disponivel'}`}>
+                    {mat.utilizada ? 'Utilizada' : 'Disponível'}
                   </span>
-                  {mat.usadoPor && <small className="usado-por">por {mat.usadoPor}</small>}
                 </td>
                 <td>
-                  {mat.status === 'DISPONIVEL' && (
-                    <button 
-                      className="btn-outline btn-copiar" 
-                      onClick={() => copiarCodigo(mat.codigo)}
-                    >
-                      <span className="material-symbols-outlined">
-                        {copiado === mat.codigo ? 'check' : 'content_copy'}
-                      </span>
+                  {!mat.utilizada && (
+                    <button className="btn-outline btn-copiar" onClick={() => copiarCodigo(mat.codigo)}>
+                      <span className="material-symbols-outlined">{copiado === mat.codigo ? 'check' : 'content_copy'}</span>
                       {copiado === mat.codigo ? 'Copiado!' : 'Copiar'}
                     </button>
                   )}
@@ -93,7 +94,47 @@ export function Matriculas() {
             ))}
           </tbody>
         </table>
+        {matriculas.length === 0 && <p className="tabela-vazia">Nenhuma matrícula gerada nesta sessão.</p>}
       </div>
+
+      {/* MODAL DE GERAR MATRÍCULAS */}
+      {isModalOpen && (
+        <div className="gestao-modal-overlay" onClick={fecharModal}>
+          <div className="gestao-modal glass-card" onClick={e => e.stopPropagation()}>
+            <span className="material-symbols-outlined fechar-modal" onClick={fecharModal}>close</span>
+            
+            <h2>Gerar Matrículas</h2>
+            <p style={{ color: 'var(--text-s)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+              Quantos convites você deseja gerar agora? (Lembre-se de verificar as vagas restantes no seu plano).
+            </p>
+
+            <form onSubmit={confirmarGeracao}>
+              <div className="form-field full" style={{ marginBottom: '1.5rem' }}>
+                <label>Quantidade</label>
+                <input
+                  type="number"
+                  className="glass-input"
+                  value={quantidade}
+                  onChange={(e) => setQuantidade(e.target.value)}
+                  min="1"
+                  max="50"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="gestao-modal-actions">
+                <button type="button" className="btn-outline" onClick={fecharModal}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn-primary" disabled={loading}>
+                  {loading ? 'Gerando...' : 'Confirmar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

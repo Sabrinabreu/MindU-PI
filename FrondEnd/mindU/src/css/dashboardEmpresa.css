@@ -193,6 +193,89 @@
 .modal-linha strong { color: var(--text); font-weight: 600; }
 .dash-modal .btn-primary { margin-top: 2rem; }
 
+
+
+/* ================= COLUNA 1 (NOVA LISTA DE PENDENTES) ================= */
+.dash-pending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  margin-bottom: auto; /* Empurra o botão para baixo */
+}
+
+.dash-pending-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dash-pending-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash-pending-info strong {
+  font-size: 0.85rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-pending-info span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-empty-pending {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 2rem 0;
+}
+
+.dash-empty-pending .material-symbols-outlined {
+  font-size: 2.5rem;
+  color: #4ade80;
+  margin-bottom: 0.5rem;
+}
+
+.dash-empty-pending p {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.btn-outline-light {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  border-radius: 100px;
+  font-family: var(--fontBody);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1.5rem;
+}
+
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 

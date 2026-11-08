@@ -15,9 +15,7 @@ const MENUS_POR_TIPO = {
   PROFISSIONAL: [
     { icon: 'person', label: 'Meu Perfil', to: '/perfil' },
     { icon: 'calendar_month', label: 'Agenda', to: '/agenda' },
-    { icon: 'group', label: 'Consultas', to: '/consultas' },
-    { icon: 'schedule', label: 'Disponibilidade', to: '/disponibilidade' },
-    { icon: 'location_on', label: 'Locais', to: '/locais' },
+    { icon: 'group', label: 'Meus Atendimentos', to: '/consultas' },
   ],
   EMPRESA: [
     { icon: 'person', label: 'Meu Perfil', to: '/perfil' },
