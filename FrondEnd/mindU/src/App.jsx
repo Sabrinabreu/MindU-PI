@@ -15,6 +15,8 @@ import { Historico } from './page/historico';
 import { DashboardEmpresa } from './page/dashboardEmpresa';
 import { Colaboradores } from './page/colaboradores';
 import { Matriculas } from './page/matriculas';
+import { AdminProfissionais } from './page/adminProfissionais';
+import { AdminClientes } from './page/adminClientes';
 
 
 import { Header } from './header';
@@ -148,7 +150,7 @@ function App() {
           path="/admin/profissionais"
           element={
             <RotaProtegida tipos={['ADMIN']}>
-              <Placeholder titulo="Profissionais (Admin)" />
+              <AdminProfissionais titulo="Profissionais (Admin)" />
             </RotaProtegida>
           }
         />
@@ -156,23 +158,15 @@ function App() {
           path="/admin/clientes"
           element={
             <RotaProtegida tipos={['ADMIN']}>
-              <Placeholder titulo="Clientes (Admin)" />
+              <AdminClientes titulo="Clientes (Admin)" />
             </RotaProtegida>
           }
         />
         <Route
-          path="/admin/relatorios"
+          path="/admin/dashboard"
           element={
             <RotaProtegida tipos={['ADMIN']}>
-              <Placeholder titulo="Relatórios (Admin)" />
-            </RotaProtegida>
-          }
-        />
-        <Route
-          path="/admin/config"
-          element={
-            <RotaProtegida tipos={['ADMIN']}>
-              <Placeholder titulo="Configurações (Admin)" />
+              <Placeholder titulo="Dashboard (Admin)" />
             </RotaProtegida>
           }
         />

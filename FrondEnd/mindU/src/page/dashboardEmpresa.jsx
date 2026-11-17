@@ -46,8 +46,6 @@ export function DashboardEmpresa() {
   const total = empresa.matriculasUsadas + empresa.matriculasDisponiveis;
   const cadastrados = beneficiarios.filter(b => b.status === 'APROVADO').length;
   const pendentes = beneficiarios.filter(b => b.status === 'AGUARDANDO_APROVACAO').length;
-  
-  // 👇 Filtra a lista apenas de quem precisa de aprovação
   const usuariosPendentes = beneficiarios.filter(b => b.status === 'AGUARDANDO_APROVACAO');
 
   const pctCadastrados = total > 0 ? Math.round((cadastrados / total) * 100) : 0;
@@ -65,6 +63,12 @@ export function DashboardEmpresa() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const formatarData = (dataString) => {
+    if (!dataString) return 'Não informada';
+    const [ano, mes, dia] = dataString.split('-');
+    return `${dia}/${mes}/${ano}`;
   };
 
   return (
@@ -180,15 +184,57 @@ export function DashboardEmpresa() {
         </div>
       </aside>
 
-      {showModalPlano && (
+            {showModalPlano && (
         <div className="dash-modal-overlay" onClick={() => setShowModalPlano(false)}>
           <div className="dash-modal glass-card" onClick={e => e.stopPropagation()}>
             <span className="material-symbols-outlined fechar-modal" onClick={() => setShowModalPlano(false)}>close</span>
             <h2>Detalhes do Plano</h2>
-            <div className="modal-linha"><strong>Plano:</strong> {empresa.plano}</div>
-            <div className="modal-linha"><strong>Total de vagas:</strong> {total}</div>
-            <div className="modal-linha"><strong>Vagas em uso:</strong> {empresa.matriculasUsadas}</div>
-            <div className="modal-linha"><strong>Vagas disponíveis:</strong> {empresa.matriculasDisponiveis}</div>
+            
+            <div className="modal-linha">
+              <strong>Plano atual:</strong> {empresa.plano}
+            </div>
+
+            <div className="modal-linha">
+              <strong>Valor por colaborador:</strong> R$ {empresa.precoMensalPorColaborador || '---'}
+            </div>
+
+            <div className="modal-linha">
+              <strong>Valor mensal estimado:</strong> R$ {empresa.valorMensalEstimado || '---'}
+            </div>
+
+            <div className="modal-linha">
+              <strong>Consultas Ilimitadas:</strong> {empresa.consultasSemLimite ? 'Sim' : 'Não'}
+            </div>
+
+            <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '1rem 0' }} />
+
+            <div className="modal-linha">
+              <strong>Início do contrato:</strong> {formatarData(empresa.inicioVigenciaPlano)}
+            </div>
+
+            <div className="modal-linha">
+              <strong>Vencimento / Renovação:</strong> 
+              <span style={{ color: empresa.fimVigenciaPlano ? 'var(--text)' : '#e11d48', marginLeft: '5px' }}>
+                {empresa.fimVigenciaPlano ? formatarData(empresa.fimVigenciaPlano) : 'Aguardando definição do Admin'}
+              </span>
+            </div>
+
+            {empresa.diaPagamento && (
+              <div className="modal-linha">
+                <strong>Dia do pagamento:</strong> Todo dia {empresa.diaPagamento}
+              </div>
+            )}
+
+            <div className="modal-linha" style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
+              <strong>Total de vagas:</strong> {total}
+            </div>
+            <div className="modal-linha">
+              <strong>Vagas em uso:</strong> {empresa.matriculasUsadas}
+            </div>
+            <div className="modal-linha">
+              <strong>Vagas disponíveis:</strong> {empresa.matriculasDisponiveis}
+            </div>
+
             <button className="btn-primary" onClick={() => setShowModalPlano(false)}>Entendi</button>
           </div>
         </div>

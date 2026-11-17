@@ -54,8 +54,7 @@
   --glass-input-border-focus: rgba(180, 140, 255, 0.95);
   --glass-input-ring: rgba(180, 140, 255, 0.18);
 
-  --glass-shadow: 0 25px 60px rgba(20, 15, 60, 0.35);
-  --glass-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --glass-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   
   --glass-text: #ffffff;
   --glass-text-soft: rgba(255, 255, 255, 0.75);
@@ -138,12 +137,12 @@ p { margin: 0; }
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
-  box-shadow: var(--glass-shadow), var(--glass-shadow-inset);
+  box-shadow: var(--glass-shadow);
   color: var(--glass-text);
   transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-.glass-card:hover {
+.glass-card.clickable:hover {
   background: var(--glass-bg-hover);
   box-shadow: var(--glass-shadow-lg);
 }
@@ -226,6 +225,10 @@ p { margin: 0; }
   cursor: pointer;
   box-shadow: var(--shadow-accent);
   transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn-gradient.full {
+  width: 100%;
 }
 
 .btn-gradient:hover:not(:disabled), 

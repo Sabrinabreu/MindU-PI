@@ -28,8 +28,7 @@ const MENUS_POR_TIPO = {
     { icon: 'apartment', label: 'Empresas', to: '/admin/empresas' },
     { icon: 'medical_services', label: 'Profissionais', to: '/admin/profissionais' },
     { icon: 'group', label: 'Clientes', to: '/admin/clientes' },
-    { icon: 'bar_chart', label: 'Relatórios', to: '/admin/relatorios' },
-    { icon: 'settings', label: 'Configurações', to: '/admin/config' },
+    { icon: 'bar_chart', label: 'Dashboard', to: '/admin/dashboard' },
   ],
 };
 

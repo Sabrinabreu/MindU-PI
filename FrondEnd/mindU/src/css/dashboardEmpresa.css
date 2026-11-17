@@ -276,6 +276,46 @@
   border-color: #fff;
 }
 
+.dash-benef-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dash-benef-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-benef-info strong,
+.dash-benef-info span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.tag-pendente {
+  flex-shrink: 0;
+  font-size: 0.65rem; 
+  background: #ffe4e6; 
+  color: #e11d48; 
+  padding: 0.2rem 0.5rem; 
+  border-radius: 100px; 
+  font-weight: 600; 
+}
+
+:root[data-theme="dark"] .tag-pendente {
+  background-color: #4c0519;
+  color: #fda4af;
+}
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 

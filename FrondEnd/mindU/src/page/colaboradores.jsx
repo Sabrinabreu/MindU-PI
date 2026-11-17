@@ -7,10 +7,10 @@ export function Colaboradores() {
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState('TODOS');
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    carregarColaboradores();
-  }, []);
+  
+  const [modalRecusaAberto, setModalRecusaAberto] = useState(false);
+  const [colaboradorParaRecusar, setColaboradorParaRecusar] = useState(null);
+  const [processando, setProcessando] = useState(false);
 
   const carregarColaboradores = async () => {
     try {
@@ -23,22 +23,41 @@ export function Colaboradores() {
     }
   };
 
+  useEffect(() => {
+    carregarColaboradores();
+  }, []);
+
   const handleAprovar = async (id, aprovado) => {
     try {
       await api(`/v1/clientes/${id}/aprovacao?aprovado=${aprovado}`, { method: 'PATCH' });
-      setColaboradores(prev => prev.map(c => 
-        c.id === id ? { ...c, status: aprovado ? 'APROVADO' : 'REJEITADO' } : c
-      ));
+      await carregarColaboradores();
     } catch (err) {
       alert('Erro ao processar: ' + err.message);
     }
+  };
+
+  const abrirModalRecusa = (colaborador) => {
+    setColaboradorParaRecusar(colaborador);
+    setModalRecusaAberto(true);
+  };
+
+  const fecharModalRecusa = () => {
+    setModalRecusaAberto(false);
+    setColaboradorParaRecusar(null);
+  };
+
+  const confirmarRecusa = async () => {
+    if (!colaboradorParaRecusar) return;
+    setProcessando(true);
+    await handleAprovar(colaboradorParaRecusar.id, false);
+    setProcessando(false);
+    fecharModalRecusa();
   };
 
   const colaboradoresFiltrados = colaboradores.filter(c => {
     const matchBusca = c.nome.toLowerCase().includes(busca.toLowerCase()) || c.email.toLowerCase().includes(busca.toLowerCase());
     let statusVisual = c.status;
     if (statusVisual === 'AGUARDANDO_APROVACAO') statusVisual = 'PENDENTE';
-    
     const matchFiltro = filtro === 'TODOS' || statusVisual === filtro;
     return matchBusca && matchFiltro;
   });
@@ -115,21 +134,19 @@ export function Colaboradores() {
                     </span>
                   </td>
                   <td>
-                    {/* BOTOES DE AÇÃO */}
                     {isPendente && (
                       <div className="acoes-aprovacao">
-                        <button className="btn-icone check" onClick={() => handleAprovar(colab.id, true)} title="Aprovar"><span className="material-symbols-outlined">check</span></button>
-                        <button className="btn-icone x" onClick={() => handleAprovar(colab.id, false)} title="Recusar"><span className="material-symbols-outlined">close</span></button>
+                        <button className="btn-icone check" onClick={() => handleAprovar(colab.id, true)} title="Aprovar">
+                          <span className="material-symbols-outlined">check</span>
+                        </button>
+                        <button className="btn-icone x" onClick={() => abrirModalRecusa(colab)} title="Recusar">
+                          <span className="material-symbols-outlined">close</span>
+                        </button>
                       </div>
                     )}
 
-                    {/* Se foi recusado, dá a opção de reconsiderar */}
                     {isRejeitado && (
-                      <button 
-                        className="btn-outline" 
-                        style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem' }} 
-                        onClick={() => handleAprovar(colab.id, true)}
-                      >
+                      <button className="btn-outline" style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem' }} onClick={() => handleAprovar(colab.id, true)}>
                         Reconsiderar
                       </button>
                     )}
@@ -141,6 +158,25 @@ export function Colaboradores() {
         </table>
         {colaboradoresFiltrados.length === 0 && <p className="tabela-vazia">Nenhum colaborador encontrado.</p>}
       </div>
+
+      {modalRecusaAberto && (
+        <div className="gestao-modal-overlay" onClick={fecharModalRecusa}>
+          <div className="gestao-modal glass-card" onClick={e => e.stopPropagation()}>
+            <span className="material-symbols-outlined fechar-modal" onClick={fecharModalRecusa}>close</span>
+            <h2>Recusar Colaborador</h2>
+            <p style={{ color: 'var(--text-s)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+              Tem certeza que deseja recusar o cadastro de <strong>{colaboradorParaRecusar?.nome}</strong>? 
+              Ele não poderá acessar a plataforma nem agendar consultas.
+            </p>
+            <div className="gestao-modal-actions">
+              <button type="button" className="btn-outline" onClick={fecharModalRecusa}>Cancelar</button>
+              <button type="button" className="btn-primary" onClick={confirmarRecusa} disabled={processando}>
+                {processando ? 'Processando...' : 'Sim, recusar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

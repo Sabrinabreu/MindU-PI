@@ -1,4 +1,4 @@
-const BASE_URL = "https://mindu-api.onrender.com"; 
+export const BASE_URL = "https://mindu-api.onrender.com"; 
 
 export function getToken() {
   return localStorage.getItem("mindu_token");
@@ -68,4 +68,8 @@ export function getIniciais(nome) {
   if (partes.length === 0) return 'U';
   if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
+}
+
+export function getFotoUrl(id) {
+  return `${BASE_URL}/v1/profissionais/${id}/foto`;
 }

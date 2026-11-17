@@ -7,19 +7,31 @@
 
 /* FILTROS */
 .buscar-filtros {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 1.5rem;
+  padding: 2rem 2rem 1.75rem;
   margin-bottom: 3rem;
   background: var(--code-bg);
-  border-radius: 16px;
+  border-radius: 20px;
   border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(61, 54, 109, 0.06);
+  overflow: hidden;
 }
+
+.buscar-filtros::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-brand);
+}
+
 
 .filtros-linha {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 

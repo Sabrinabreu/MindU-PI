@@ -60,7 +60,7 @@ export function Cadastro() {
                 <button
                   key={t.id}
                   type="button"
-                  className="tipo-card glass-card"
+                  className="tipo-card glass-card clickable"
                   onClick={() => setTipo(t.id)}
                 >
                   <span className="material-symbols-outlined glass-icon">

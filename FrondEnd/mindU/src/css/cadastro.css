@@ -342,16 +342,76 @@
   text-align: center;
 }
 
+/* ===== Animação das Pills de Plano ===== */
+.plano-chip {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efeito ao passar o mouse */
+.plano-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.15);
+}
+
+/* Efeito ao clicar */
+.plano-chip:active {
+  transform: scale(0.95);
+}
+
+.plano-chip.active {
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* A animação de pop dos chip de plano */
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* Responsividade */
 @media (max-width: 720px) {
-  .form-grid.cols-2 {
-    grid-template-columns: 1fr;
-  }
   .cadastro-form {
-    padding: 2.6rem 1.6rem 1.8rem;
-    border-radius: 24px;
+    padding: 2rem 1rem 1rem;
+    border-radius: 20px;
   }
-  .cadastro-content {
-    padding: 0 1rem;
+
+  .cadastro-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .cadastro-tipos {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .tipo-card {
+    flex-direction: row; 
+    text-align: left;
+    padding: 1.2rem 1rem;
+    gap: 1rem;
+  }
+
+  .tipo-card .glass-icon {
+    margin-bottom: 0;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .tipo-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .tipo-card p {
+    font-size: 0.8rem;
+  }
+  
+  .cadastro-form h2 {
+    margin-top: 2em;
   }
 }

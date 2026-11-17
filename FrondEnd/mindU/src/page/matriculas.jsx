@@ -1,13 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../api';
 import '../css/gestao.css';
 
 export function Matriculas() {
   const [matriculas, setMatriculas] = useState([]);
   const [copiado, setCopiado] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  // Estados dos Filtros
+  const [buscaCodigo, setBuscaCodigo] = useState('');
+  const [buscaNome, setBuscaNome] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('TODOS');
+
+  // Estados do Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quantidade, setQuantidade] = useState(5);
+  const [gerando, setGerando] = useState(false);
+
+  useEffect(() => {
+    const fetchMatriculas = async () => {
+      try {
+        const res = await api('/v1/empresas/me/matriculas');
+        setMatriculas(res);
+      } catch (err) {
+        console.error('Erro ao carregar matrículas:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMatriculas();
+  }, []);
 
   const abrirModal = () => {
     setQuantidade(5);
@@ -19,22 +41,17 @@ export function Matriculas() {
   const confirmarGeracao = async (e) => {
     e.preventDefault();
     const qtd = parseInt(quantidade);
-    
-    if (!qtd || qtd <= 0) {
-      return alert('Por favor, insira um número válido maior que zero.');
-    }
+    if (!qtd || qtd <= 0) return alert('Insira um número válido.');
 
-    setLoading(true);
+    setGerando(true);
     try {
       const res = await api(`/v1/empresas/me/matriculas?quantidade=${qtd}`, { method: 'POST' });
-      const novas = res.map(m => ({ ...m, data: new Date().toLocaleDateString('pt-BR') }));
-      setMatriculas(prev => [...novas, ...prev]);
-      
+      setMatriculas(prev => [...res, ...prev]);
       fecharModal();
     } catch (err) {
       alert('Erro ao gerar: ' + err.message);
     } finally {
-      setLoading(false);
+      setGerando(false);
     }
   };
 
@@ -43,6 +60,20 @@ export function Matriculas() {
     setCopiado(codigo);
     setTimeout(() => setCopiado(null), 2000);
   };
+
+  // Lógica de Filtragem
+  const matriculasFiltradas = matriculas.filter(mat => {
+    const matchCodigo = mat.codigo.toLowerCase().includes(buscaCodigo.toLowerCase());
+    const matchNome = (mat.clienteNome || '').toLowerCase().includes(buscaNome.toLowerCase());
+    
+    let matchStatus = true;
+    if (filtroStatus === 'DISPONIVEL') matchStatus = !mat.utilizada;
+    if (filtroStatus === 'UTILIZADA') matchStatus = mat.utilizada;
+
+    return matchCodigo && matchNome && matchStatus;
+  });
+
+  if (loading) return <div className="loading"><span className="material-symbols-outlined girando">progress_activity</span><p>Carregando…</p></div>;
 
   return (
     <div className="gestao-page">
@@ -59,7 +90,34 @@ export function Matriculas() {
 
       <div className="gestao-aviso glass-card">
         <span className="material-symbols-outlined">info</span>
-        <p>Copie o código abaixo e envie para o colaborador. No momento do cadastro, ele deve inserir este código.</p>
+        <p>Copie o código abaixo e envie para o colaborador.</p>
+      </div>
+
+      {/* FILTROS */}
+      <div className="gestao-filtros glass-card">
+        <div className="input-icon">
+          <span className="material-symbols-outlined">search</span>
+          <input 
+            type="text" 
+            placeholder="Buscar por código..." 
+            value={buscaCodigo} 
+            onChange={e => setBuscaCodigo(e.target.value)} 
+          />
+        </div>
+        <div className="input-icon">
+          <span className="material-symbols-outlined">person</span>
+          <input 
+            type="text" 
+            placeholder="Buscar por nome..." 
+            value={buscaNome} 
+            onChange={e => setBuscaNome(e.target.value)} 
+          />
+        </div>
+        <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)}>
+          <option value="TODOS">Todos os status</option>
+          <option value="DISPONIVEL">Disponíveis</option>
+          <option value="UTILIZADA">Utilizadas</option>
+        </select>
       </div>
 
       <div className="gestao-tabela-container glass-card">
@@ -67,20 +125,22 @@ export function Matriculas() {
           <thead>
             <tr>
               <th>Código</th>
-              <th>Gerada em</th>
               <th>Status</th>
+              <th>Utilizada por</th>
               <th>Ação</th>
             </tr>
           </thead>
           <tbody>
-            {matriculas.map(mat => (
+            {matriculasFiltradas.map(mat => (
               <tr key={mat.id}>
                 <td><strong className="codigo-matricula">{mat.codigo}</strong></td>
-                <td>{mat.data}</td>
                 <td>
                   <span className={`status-badge ${mat.utilizada ? 'utilizada' : 'disponivel'}`}>
                     {mat.utilizada ? 'Utilizada' : 'Disponível'}
                   </span>
+                </td>
+                <td>
+                  {mat.utilizada ? (mat.clienteNome || 'Carregando...') : '-'}
                 </td>
                 <td>
                   {!mat.utilizada && (
@@ -94,42 +154,24 @@ export function Matriculas() {
             ))}
           </tbody>
         </table>
-        {matriculas.length === 0 && <p className="tabela-vazia">Nenhuma matrícula gerada nesta sessão.</p>}
+        {matriculasFiltradas.length === 0 && <p className="tabela-vazia">Nenhuma matrícula encontrada com esses filtros.</p>}
       </div>
 
-      {/* MODAL DE GERAR MATRÍCULAS */}
+      {/* Modal de Gerar Matrícula */}
       {isModalOpen && (
         <div className="gestao-modal-overlay" onClick={fecharModal}>
           <div className="gestao-modal glass-card" onClick={e => e.stopPropagation()}>
             <span className="material-symbols-outlined fechar-modal" onClick={fecharModal}>close</span>
-            
             <h2>Gerar Matrículas</h2>
-            <p style={{ color: 'var(--text-s)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-              Quantos convites você deseja gerar agora? (Lembre-se de verificar as vagas restantes no seu plano).
-            </p>
-
+            <p style={{ color: 'var(--text-s)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Quantos convites deseja gerar agora?</p>
             <form onSubmit={confirmarGeracao}>
               <div className="form-field full" style={{ marginBottom: '1.5rem' }}>
                 <label>Quantidade</label>
-                <input
-                  type="number"
-                  className="glass-input"
-                  value={quantidade}
-                  onChange={(e) => setQuantidade(e.target.value)}
-                  min="1"
-                  max="50"
-                  required
-                  autoFocus
-                />
+                <input type="number" className="glass-input" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} min="1" max="50" required autoFocus />
               </div>
-
               <div className="gestao-modal-actions">
-                <button type="button" className="btn-outline" onClick={fecharModal}>
-                  Cancelar
-                </button>
-                <button type="submit" className="btn-primary" disabled={loading}>
-                  {loading ? 'Gerando...' : 'Confirmar'}
-                </button>
+                <button type="button" className="btn-outline" onClick={fecharModal}>Cancelar</button>
+                <button type="submit" className="btn-primary" disabled={gerando}>{gerando ? 'Gerando...' : 'Confirmar'}</button>
               </div>
             </form>
           </div>
