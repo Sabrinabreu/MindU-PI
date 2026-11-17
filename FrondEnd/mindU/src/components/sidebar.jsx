@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { limparSessao, getIniciais } from '../api';
-import { useTema } from '../hooks/useTema'; 
+import { limparSessao, getIniciais, getFotoUrl } from '../api';
+import { useTema } from '../hooks/useTema';
 import '../css/sidebar.css';
 
-// Links de exemplo (substituir depois)
 const MENUS_POR_TIPO = {
   BENEFICIARIO: [
     { icon: 'person', label: 'Meu Perfil', to: '/perfil' },
@@ -35,10 +34,25 @@ const MENUS_POR_TIPO = {
 export function Sidebar({ usuario, isOpen, onClose }) {
   const navigate = useNavigate();
   const { tema, toggleTema } = useTema();
+  const [fotoErro, setFotoErro] = useState(false);
+
+  // Recalcula quando o usuário muda (login/logout/troca de foto)
+  useEffect(() => {
+    setFotoErro(false);
+  }, [usuario?.id, usuario?.foto]);
 
   if (!usuario) return null;
 
   const links = MENUS_POR_TIPO[usuario.tipo] || [];
+
+  // Foto do profissional vem do endpoint /v1/profissionais/{id}/foto;
+  // empresa/beneficiário/admin usam iniciais (sem endpoint de foto).
+  const fotoSrc =
+    usuario.tipo === 'PROFISSIONAL'
+      ? getFotoUrl(usuario.id)
+      : usuario.foto;
+
+  const mostrarFoto = fotoSrc && !fotoErro;
 
   const handleLogout = () => {
     limparSessao();
@@ -57,8 +71,12 @@ export function Sidebar({ usuario, isOpen, onClose }) {
       <aside className={`sidebar ${isOpen ? 'active' : ''}`} aria-hidden={!isOpen}>
         <Link to="/perfil" className="sidebar-user" onClick={onClose}>
           <div className="sidebar-avatar">
-            {usuario.foto ? (
-              <img src={usuario.foto} alt={usuario.nome} />
+            {mostrarFoto ? (
+              <img
+                src={fotoSrc}
+                alt={usuario.nome}
+                onError={() => setFotoErro(true)}
+              />
             ) : (
               <span className="avatar-text">{getIniciais(usuario.nome)}</span>
             )}

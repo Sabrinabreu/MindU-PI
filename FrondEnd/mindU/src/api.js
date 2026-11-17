@@ -1,4 +1,4 @@
-export const BASE_URL = "https://mindu-api.onrender.com"; 
+export const BASE_URL = "https://mindu-api.onrender.com";
 
 export function getToken() {
   return localStorage.getItem("mindu_token");
@@ -22,7 +22,7 @@ export function salvarSessao({ token, tipo, id, nome, foto }) {
   if (id) localStorage.setItem("mindu_user_id", id);
   if (nome) localStorage.setItem("mindu_user_nome", nome);
   if (foto) localStorage.setItem("mindu_user_foto", foto);
-  
+
   window.dispatchEvent(new Event('usuario-mudou'));
 }
 
@@ -61,7 +61,6 @@ export async function api(path, { method = "GET", body, isFormData = false } = {
   }
 }
 
-
 export function getIniciais(nome) {
   if (!nome) return 'U';
   const partes = nome.trim().split(' ').filter(Boolean);
@@ -72,4 +71,8 @@ export function getIniciais(nome) {
 
 export function getFotoUrl(id) {
   return `${BASE_URL}/v1/profissionais/${id}/foto`;
+}
+
+export function getBannerUrl(id) {
+  return `${BASE_URL}/v1/profissionais/${id}/banner`;
 }

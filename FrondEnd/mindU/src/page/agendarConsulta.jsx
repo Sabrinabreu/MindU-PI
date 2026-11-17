@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Calendar } from '../components/calendar';
-import { api } from '../api';
+import { api, getFotoUrl, getIniciais } from '../api';
 import '../css/agendarConsulta.css';
 
 const formatarDataLocal = (date) => {
@@ -28,6 +28,7 @@ export function AgendarConsulta() {
   const [modalidadesDisponiveis, setModalidadesDisponiveis] = useState([]);
   const [modalidadeSelecionada, setModalidadeSelecionada] = useState(null);
   const [diasBloqueados, setDiasBloqueados] = useState([]);
+  const [fotoErro, setFotoErro] = useState(false);
 
   useEffect(() => {
     if (!profissional) return;
@@ -111,8 +112,25 @@ export function AgendarConsulta() {
     <div className="agendar-page">
       <aside className="agendar-sidebar glass-card">
         <div className="agendar-prof-top">
-          <div className="avatar-text-grande" style={{ width: 80, height: 80, margin: '0 auto' }}>
-            {profissional.nome.charAt(0)}
+          <div style={{ width: 80, height: 80, margin: '0 auto 0.5rem' }}>
+            {!fotoErro ? (
+              <img
+                src={getFotoUrl(profissional.id)}
+                alt={profissional.nome}
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '3px solid var(--accent)',
+                }}
+                onError={() => setFotoErro(true)}
+              />
+            ) : (
+              <div className="avatar-text-grande" style={{ width: 80, height: 80 }}>
+                {getIniciais(profissional.nome)}
+              </div>
+            )}
           </div>
           <h2>{profissional.nome}</h2>
           <span className="agendar-prof-area">{profissional.tipo}</span>

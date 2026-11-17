@@ -1,0 +1,226 @@
+.recover-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: clip;
+  padding: 3rem 1rem;
+}
+
+.recover-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('https://plus.unsplash.com/premium_photo-1674478876962-6703253531c4?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.recover-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 15, 60, 0.55) 20%,
+    rgba(20, 15, 60, 0.25) 60%,
+    rgba(20, 15, 60, 0.35) 100%
+  );
+}
+
+.recover-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.recover-form {
+  width: 100%;
+  padding: 3.2rem 2.6rem 2.6rem;
+  border-radius: 28px;
+  text-align: center;
+  animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.recover-voltar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--glass-text-soft);
+  text-decoration: none;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+
+.recover-voltar:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.recover-voltar .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.recover-icon-wrapper {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--gradient-brand);
+  box-shadow: var(--shadow-accent);
+}
+
+.recover-icon-wrapper .material-symbols-outlined {
+  font-size: 36px;
+  color: #fff;
+}
+
+.recover-success-icon,
+.recover-error-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.recover-success-icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.recover-success-icon .material-symbols-outlined {
+  font-size: 42px;
+  color: #fff;
+}
+
+.recover-error-icon {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.recover-error-icon .material-symbols-outlined {
+  font-size: 42px;
+  color: #fff;
+}
+
+.recover-form h2 {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(20, 15, 60, 0.3);
+}
+
+.recover-form .form-subtitle {
+  font-size: 0.92rem;
+  color: var(--glass-text-soft);
+  margin-bottom: 2rem;
+  line-height: 1.55;
+}
+
+.recover-form form {
+  text-align: left;
+}
+
+.recover-form .form-field label {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.recover-form .btn-gradient {
+  margin-top: 1.4rem;
+  width: 100%;
+  text-decoration: none;
+}
+
+.recover-footer {
+  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  color: var(--glass-text-soft);
+}
+
+.recover-footer a {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.recover-footer a:hover {
+  color: var(--accent);
+}
+
+.recover-info-box {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.recover-info-box .material-symbols-outlined {
+  font-size: 20px;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.recover-info-box p {
+  font-size: 0.82rem;
+  color: var(--glass-text-soft);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.recover-tentar-novamente {
+  display: inline-block;
+  margin-top: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--glass-text-soft);
+  font-family: var(--fontBody);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0.4rem;
+  transition: color 0.2s ease;
+}
+
+.recover-tentar-novamente:hover {
+  color: #fff;
+}
+
+@media (max-width: 500px) {
+  .recover-form {
+    padding: 3rem 1.8rem 2rem;
+  }
+
+  .recover-form h2 {
+    font-size: 1.3rem;
+  }
+}

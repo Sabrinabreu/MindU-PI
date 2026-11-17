@@ -18,6 +18,9 @@ import { Matriculas } from './page/matriculas';
 import { AdminProfissionais } from './page/adminProfissionais';
 import { AdminClientes } from './page/adminClientes';
 
+import { RecuperarSenha } from './page/recuperarSenha';
+import { RedefinirSenha } from './page/redefinirSenha';
+
 
 import { Header } from './header';
 import { Footer } from './components/footer';
@@ -27,7 +30,7 @@ import { Sidebar } from './components/sidebar';
 import { RotaProtegida } from './components/rotasProtegidas';
 import { useUsuario } from './hooks/useUsuario';
 
-const ROTAS_SEM_FOOTER = ['/cadastro', '/login', '/recuperar-senha'];
+const ROTAS_SEM_FOOTER = ['/cadastro', '/login', '/recuperar-senha', '/redefinir-senha'];
 
 function App() {
   const location = useLocation();
@@ -53,6 +56,8 @@ function App() {
         <Route path="/contato" element={<Contato />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
 
         {/* Rotas logadas (qualquer tipo) */}
         <Route

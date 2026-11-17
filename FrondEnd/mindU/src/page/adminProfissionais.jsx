@@ -95,14 +95,14 @@ export function AdminProfissionais() {
       if (!res.ok) {
         setPreview({
           prof,
-          erro: 'A visualização da carteirinha ainda não foi implementada no backend.',
+          erro: 'Não foi possível carregar a carteirinha. Verifique se o profissional enviou o arquivo corretamente.',
         });
         return;
       }
       const blob = await res.blob();
       setPreview({ prof, url: URL.createObjectURL(blob) });
     } catch (err) {
-      setPreview({ prof, erro: 'Erro ao carregar a carteirinha.' });
+      setPreview({ prof, erro: 'Erro de rede ao carregar a carteirinha.' });
     }
   };
 
@@ -168,85 +168,14 @@ export function AdminProfissionais() {
               const prazo = tempoRestante(prof.prazoVerificacaoAte);
               const processandoEste = processando === prof.id;
               return (
-                <div key={prof.id} className="admin-prof-card">
-                  <div className="admin-prof-card-top">
-                    <div className="admin-prof-avatar">{getIniciais(prof.nome)}</div>
-                    <div className="admin-prof-info">
-                      <h3>{prof.nome}</h3>
-                      <div className="admin-prof-email">{prof.email}</div>
-                      <div className="admin-prof-meta">
-                        <span className="admin-prof-badge tipo">{TIPO_LABEL[prof.tipo] || prof.tipo}</span>
-                        <span className={`admin-prof-badge status-${(prof.status || '').toLowerCase()}`}>
-                          {STATUS_LABEL[prof.status] || prof.status}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {prof.tags?.length > 0 && (
-                    <div className="admin-prof-tags">
-                      {prof.tags.map((t) => (
-                        <span key={t} className="admin-prof-tag">{t}</span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="admin-prof-info-linha">
-                    <span className="material-symbols-outlined">upload_file</span>
-                    Carteirinha enviada em {formatarData(prof.carteirinhaEnviadaEm)}
-                  </div>
-
-                  {prazo && prof.status === 'PENDENTE' && (
-                    <div className={`admin-prof-prazo ${prazo.classe}`}>
-                      <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
-                        {prazo.icone}
-                      </span>
-                      {prazo.texto}
-                    </div>
-                  )}
-
-                  <div className="admin-prof-actions">
-                    <button className="btn-ver-carteirinha" onClick={() => abrirPreview(prof)}>
-                      <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>visibility</span>
-                      Carteirinha
-                    </button>
-
-                    {prof.status === 'PENDENTE' && (
-                      <>
-                        <button
-                          className="btn-rejeitar"
-                          onClick={() => setConfirmacao({ prof, aprovar: false })}
-                          disabled={processandoEste}
-                        >
-                          Rejeitar
-                        </button>
-                        <button
-                          className="btn-aprovar"
-                          onClick={() => setConfirmacao({ prof, aprovar: true })}
-                          disabled={processandoEste}
-                        >
-                          {processandoEste ? 'Processando...' : 'Aprovar'}
-                        </button>
-                      </>
-                    )}
-
-                    {prof.status === 'APROVADO' && (
-                      <button
-                        className="btn-rejeitar"
-                        onClick={() => setConfirmacao({ prof, aprovar: false })}
-                        disabled={processandoEste}
-                      >
-                        Revogar acesso
-                      </button>
-                    )}
-
-                    {prof.status === 'REJEITADO' && (
-                      <span style={{ fontSize: '0.82rem', color: 'var(--text-s)', padding: '0.5rem', alignSelf: 'center' }}>
-                        Aguardando reenvio
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <AdminCard
+                  key={prof.id}
+                  prof={prof}
+                  prazo={prazo}
+                  processandoEste={processandoEste}
+                  onPreview={abrirPreview}
+                  onConfirmar={setConfirmacao}
+                />
               );
             })
           )}
@@ -313,9 +242,6 @@ export function AdminProfissionais() {
                   info
                 </span>
                 <p>{preview.erro}</p>
-                <p style={{ fontSize: '0.82rem', marginTop: '0.5rem', color: 'var(--text-m)' }}>
-                  Endpoint esperado: GET /v1/admin/profissionais/{preview.prof.id}/carteirinha
-                </p>
               </div>
             ) : (
               <img src={preview.url} alt="Carteirinha" className="admin-prof-preview-img" />
@@ -325,4 +251,105 @@ export function AdminProfissionais() {
       )}
     </div>
   );
+}
+
+function AdminCard({ prof, prazo, processandoEste, onPreview, onConfirmar }) {
+  const [fotoErro, setFotoErro] = useState(false);
+
+  return (
+    <div className="admin-prof-card">
+      <div className="admin-prof-card-top">
+        {!fotoErro ? (
+          <img
+            src={`${BASE_URL}/v1/admin/profissionais/${prof.id}/foto`}
+            alt={prof.nome}
+            className="admin-prof-avatar"
+            style={{ objectFit: 'cover' }}
+            onError={() => setFotoErro(true)}
+          />
+        ) : (
+          <div className="admin-prof-avatar">{getIniciais(prof.nome)}</div>
+        )}
+        <div className="admin-prof-info">
+          <h3>{prof.nome}</h3>
+          <div className="admin-prof-email">{prof.email}</div>
+          <div className="admin-prof-meta">
+            <span className="admin-prof-badge tipo">{TIPO_LABEL[prof.tipo] || prof.tipo}</span>
+            <span className={`admin-prof-badge status-${(prof.status || '').toLowerCase()}`}>
+              {STATUS_LABEL[prof.status] || prof.status}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {prof.tags?.length > 0 && (
+        <div className="admin-prof-tags">
+          {prof.tags.map((t) => (
+            <span key={t} className="admin-prof-tag">{t}</span>
+          ))}
+        </div>
+      )}
+
+      <div className="admin-prof-info-linha">
+        <span className="material-symbols-outlined">upload_file</span>
+        Carteirinha enviada em {formatarData(prof.carteirinhaEnviadaEm)}
+      </div>
+
+      {prazo && prof.status === 'PENDENTE' && (
+        <div className={`admin-prof-prazo ${prazo.classe}`}>
+          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>
+            {prazo.icone}
+          </span>
+          {prazo.texto}
+        </div>
+      )}
+
+      <div className="admin-prof-actions">
+        <button className="btn-ver-carteirinha" onClick={() => onPreview(prof)}>
+          <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>visibility</span>
+          Carteirinha
+        </button>
+
+        {prof.status === 'PENDENTE' && (
+          <>
+            <button
+              className="btn-rejeitar"
+              onClick={() => onConfirmar({ prof, aprovar: false })}
+              disabled={processandoEste}
+            >
+              Rejeitar
+            </button>
+            <button
+              className="btn-aprovar"
+              onClick={() => onConfirmar({ prof, aprovar: true })}
+              disabled={processandoEste}
+            >
+              {processandoEste ? 'Processando...' : 'Aprovar'}
+            </button>
+          </>
+        )}
+
+        {prof.status === 'APROVADO' && (
+          <button
+            className="btn-rejeitar"
+            onClick={() => onConfirmar({ prof, aprovar: false })}
+            disabled={processandoEste}
+          >
+            Revogar acesso
+          </button>
+        )}
+
+        {prof.status === 'REJEITADO' && (
+          <span style={{ fontSize: '0.82rem', color: 'var(--text-s)', padding: '0.5rem', alignSelf: 'center' }}>
+            Aguardando reenvio
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function formatarData(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
 }

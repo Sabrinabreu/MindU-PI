@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './css/header.css';
-import { getIniciais } from './api';
+import { getIniciais, getFotoUrl } from './api';
 
 export function Header({ usuario, onToggleSidebar }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [fotoErro, setFotoErro] = useState(false);
+
+  useEffect(() => {
+    setFotoErro(false);
+  }, [usuario?.id, usuario?.foto]);
+
   const closeMenu = () => setIsMenuOpen(false);
+
+  // Foto do profissional vem do endpoint /v1/profissionais/{id}/foto.
+  // Os outros tipos caem em iniciais.
+  const fotoSrc =
+    usuario?.tipo === 'PROFISSIONAL'
+      ? getFotoUrl(usuario.id)
+      : usuario?.foto;
+
+  const mostrarFoto = fotoSrc && !fotoErro;
 
   return (
     <header className="site-header">
@@ -14,7 +29,6 @@ export function Header({ usuario, onToggleSidebar }) {
           MindU
         </Link>
 
-        {/* Navbar central (Desktop) */}
         <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
           <Link to="/" onClick={closeMenu}>Início</Link>
           <Link to="/contato" onClick={closeMenu}>Contato</Link>
@@ -23,7 +37,6 @@ export function Header({ usuario, onToggleSidebar }) {
           )}
         </nav>
 
-        {/* Ações e Botões (Mobile e Desktop) */}
         <div className="header-actions">
           {usuario ? (
             <button
@@ -33,8 +46,12 @@ export function Header({ usuario, onToggleSidebar }) {
               aria-label="Abrir menu da conta"
             >
               <div className="header-user-avatar">
-                {usuario.foto ? (
-                  <img src={usuario.foto} alt={usuario.nome} />
+                {mostrarFoto ? (
+                  <img
+                    src={fotoSrc}
+                    alt={usuario.nome}
+                    onError={() => setFotoErro(true)}
+                  />
                 ) : (
                   <span className="avatar-text">{getIniciais(usuario.nome)}</span>
                 )}
@@ -53,7 +70,6 @@ export function Header({ usuario, onToggleSidebar }) {
           )}
         </div>
 
-        {/* Botão Hambúrguer (Mobile) */}
         <button
           className="menu-toggle"
           onClick={() => setIsMenuOpen(!isMenuOpen)}

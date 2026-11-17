@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IMaskInput } from 'react-imask';
-import { getUsuario, getIniciais, api } from '../api';
+import { getUsuario, getIniciais, api, getFotoUrl, getBannerUrl } from '../api';
 import '../css/perfil.css';
 
 const INITIAL = {
@@ -25,9 +25,13 @@ export function Perfil() {
   const [originalForm, setOriginalForm] = useState(INITIAL);
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
-  const [isOnboarding, setIsOnboarding] = useState(false); // APROVADO + dados sensíveis faltando
+  const [isOnboarding, setIsOnboarding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [bloqueioStatus, setBloqueioStatus] = useState(null); // AGUARDANDO_APROVACAO | REJEITADO | PENDENTE
+  const [bloqueioStatus, setBloqueioStatus] = useState(null);
+
+  // Arquivos a enviar no submit (foto + banner do profissional)
+  const [fotoFile, setFotoFile] = useState(null);
+  const [bannerFile, setBannerFile] = useState(null);
 
   const [novoLocal, setNovoLocal] = useState({ modalidade: 'VIRTUAL' });
   const [novaDispo, setNovaDispo] = useState({ diaSemana: 'SEGUNDA', horaInicio: '08:00', horaFim: '12:00' });
@@ -42,7 +46,6 @@ export function Perfil() {
         if (u.tipo === 'BENEFICIARIO') {
           const dadosBasicos = await api('/v1/clientes/me');
 
-          // ===== STATUS BLOQUEADO: mostra tela de espera/recusa, SEM form editável =====
           if (dadosBasicos.status === 'AGUARDANDO_APROVACAO' || dadosBasicos.status === 'REJEITADO') {
             const formInicial = { ...INITIAL, ...dadosBasicos };
             setForm(formInicial);
@@ -54,7 +57,6 @@ export function Perfil() {
             return;
           }
 
-          // ===== APROVADO: busca dados sensíveis e decide se precisa onboarding =====
           let dadosSensiveis = {};
           try {
             dadosSensiveis = await api('/v1/clientes/me/dados-sensiveis');
@@ -100,6 +102,8 @@ export function Perfil() {
             ...dados,
             locais: dados.locaisAtendimento || [],
             disponibilidade: dados.disponibilidades || [],
+            foto: getFotoUrl(dados.id),
+            banner: getBannerUrl(dados.id),
           };
           setForm(formInicial);
           setOriginalForm(formInicial);
@@ -130,7 +134,6 @@ export function Perfil() {
     fetchPerfil();
   }, [navigate]);
 
-  // Revalida status a cada 30s se estiver bloqueado (RH pode aprovar enquanto aberto)
   useEffect(() => {
     if (!bloqueioStatus || !usuario) return;
     const id = setInterval(async () => {
@@ -152,6 +155,14 @@ export function Perfil() {
     setForm((p) => ({ ...p, [name]: value }));
   };
 
+  const handleFileChange = (campo) => (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (campo === 'foto') setFotoFile(file);
+    if (campo === 'banner') setBannerFile(file);
+    setForm((p) => ({ ...p, [campo]: URL.createObjectURL(file) }));
+  };
+
   const toggleArrayItem = (campo, valor) => {
     setForm((p) => ({ ...p, [campo]: p[campo].includes(valor) ? p[campo].filter((v) => v !== valor) : [...p[campo], valor] }));
   };
@@ -170,6 +181,8 @@ export function Perfil() {
 
   const handleCancelarEdicao = () => {
     setForm(originalForm);
+    setFotoFile(null);
+    setBannerFile(null);
     setIsEditing(false);
   };
 
@@ -180,7 +193,7 @@ export function Perfil() {
     if (tipo === 'PROFISSIONAL') {
       return f.status === 'APROVADO' && f.tipo && f.bio && f.tags && f.tags.length > 0;
     }
-    return true; // EMPRESA, ADMIN
+    return true;
   };
 
   const handleSubmit = async (e) => {
@@ -220,6 +233,19 @@ export function Perfil() {
           method: 'PATCH',
           body: { nome: form.nome, email: form.email, telefone: form.telefone, bio: form.bio, tipo: form.tipo, tags: form.tags },
         });
+
+        // Upload de foto e banner (se o usuário selecionou)
+        if (fotoFile || bannerFile) {
+          const fd = new FormData();
+          if (fotoFile) fd.append('foto', fotoFile);
+          if (bannerFile) fd.append('fotoBanner', bannerFile);
+          await api(`/v1/profissionais/${usuario.id}/perfil`, {
+            method: 'PATCH',
+            body: fd,
+            isFormData: true,
+          });
+        }
+
         for (const local of form.locais) {
           if (!local.id) await api(`/v1/profissionais/${usuario.id}/locais`, { method: 'POST', body: local });
         }
@@ -238,12 +264,14 @@ export function Perfil() {
         });
       }
 
-      // ===== SÓ remove a flag se o perfil estiver REALMENTE completo =====
       const completo = verificarCompleto(usuario.tipo, form);
       if (completo) {
         localStorage.removeItem('mindu_perfil_incompleto');
       }
 
+      // Reseta arquivos pendentes (já foram enviados)
+      setFotoFile(null);
+      setBannerFile(null);
       setOriginalForm(form);
       setIsEditing(false);
 
@@ -264,7 +292,6 @@ export function Perfil() {
     return <div className="perfil-page"><div className="loading"><span className="material-symbols-outlined girando">progress_activity</span><p>Carregando…</p></div></div>;
   }
 
-  // ===== TELAS DE BLOQUEIO =====
   if (bloqueioStatus === 'AGUARDANDO_APROVACAO') {
     return (
       <div className="perfil-page">
@@ -319,7 +346,6 @@ export function Perfil() {
     );
   }
 
-  // ===== PERFIL NORMAL / ONBOARDING =====
   return (
     <div className="perfil-page">
       <form className="perfil-card" onSubmit={handleSubmit}>
@@ -330,12 +356,18 @@ export function Perfil() {
         )}
 
         <div className="perfil-capa">
-          <div className="perfil-capa-banner" style={{ backgroundImage: `url(${form.banner})` }}>
+          <div
+            className="perfil-capa-banner"
+            style={{
+              backgroundImage: form.banner ? `url(${form.banner})` : 'none',
+              background: form.banner ? undefined : 'var(--gradient-brand)',
+            }}
+          >
             <div className="perfil-capa-pattern" />
             {isEditing && (
               <label className="perfil-edit-btn" title="Alterar capa">
                 <span className="material-symbols-outlined">edit</span>
-                <input type="file" accept="image/*" name="banner" onChange={handleChange} hidden />
+                <input type="file" accept="image/*" onChange={handleFileChange('banner')} hidden />
               </label>
             )}
           </div>
@@ -343,11 +375,19 @@ export function Perfil() {
 
         <div className="perfil-capa-info">
           <div className="perfil-capa-avatar">
-            {form.foto ? <img src={form.foto} alt={form.nome} /> : <div className="avatar-text-grande">{getIniciais(form.nome)}</div>}
+            {form.foto ? (
+              <img
+                src={form.foto}
+                alt={form.nome}
+                onError={() => setForm((p) => ({ ...p, foto: '' }))}
+              />
+            ) : (
+              <div className="avatar-text-grande">{getIniciais(form.nome)}</div>
+            )}
             {isEditing && (
-              <label className="perfil-edit-avatar-btn" title="Alterar logotipo">
+              <label className="perfil-edit-avatar-btn" title="Alterar foto">
                 <span className="material-symbols-outlined">photo_camera</span>
-                <input type="file" accept="image/*" name="foto" onChange={handleChange} hidden />
+                <input type="file" accept="image/*" onChange={handleFileChange('foto')} hidden />
               </label>
             )}
           </div>
@@ -401,7 +441,7 @@ export function Perfil() {
   );
 }
 
-/* --- COMPONENTES AUXILIARES (mantidos) --- */
+/* --- COMPONENTES AUXILIARES --- */
 
 function PerfilProfissional({ form, onChange, toggle, novoLocal, setNovoLocal, handleAddLocal, novaDispo, setNovaDispo, handleAddDispo, isEditing }) {
   return (

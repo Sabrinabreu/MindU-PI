@@ -165,6 +165,9 @@ export function Login() {
           <p className="login-cadastro-link">
             Ainda não tem conta? <Link to="/cadastro">Cadastre-se</Link>
           </p>
+          <p className="login-esqueci-link">
+            <Link to="/recuperar-senha">Esqueci minha senha</Link>
+          </p>
         </form>
       </div>
     </div>
