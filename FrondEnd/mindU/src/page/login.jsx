@@ -11,7 +11,11 @@ export function Login() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === 'email' ? value.toLowerCase().replace(/\s+/g, '') : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -19,11 +23,14 @@ export function Login() {
     setErro('');
     setLoading(true);
 
-    // ===== 1) LOGIN =====
+    const payload = {
+      ...form,
+      email: form.email.trim().toLowerCase(),
+    };
+
     let resLogin;
     try {
-      resLogin = await api('/v1/auth/login', { method: 'POST', body: form });
-      // Salva o token ANTES de chamar /auth/me, porque o /me precisa dele
+      resLogin = await api('/v1/auth/login', { method: 'POST', body: payload });
       localStorage.setItem('mindu_token', resLogin.token);
     } catch (err) {
       setErro(err.message);
@@ -31,8 +38,6 @@ export function Login() {
       return;
     }
 
-    // ===== 2) CARREGA DADOS BÁSICOS DO USUÁRIO =====
-    // Se isso falhar aqui, é sério — desloga e pede pra tentar de novo
     let me;
     try {
       me = await api('/v1/auth/me');
@@ -53,9 +58,6 @@ export function Login() {
       nome: me.nome,
     });
 
-    // ===== 3) VERIFICA STATUS / COMPLETUDE DO PERFIL =====
-    // perfilIncompleto → usuário pode entrar, mas SÓ na tela de perfil
-    // bloqueado        → conta não aprovada / rejeitada, precisa de tela própria
     let perfilIncompleto = false;
     let bloqueado = null;
 
@@ -71,11 +73,10 @@ export function Login() {
               perfilIncompleto = true;
             }
           } catch {
-            // Endpoint falhou → por precaução, exige preencher
             perfilIncompleto = true;
           }
         } else {
-          // AGUARDANDO_APROVACAO ou REJEITADO → conta bloqueada
+          // AGUARDANDO_APROVACAO ou REJEITADO = conta bloqueada
           bloqueado = c.status;
         }
       } else if (tipoFrontend === 'PROFISSIONAL') {
@@ -90,11 +91,11 @@ export function Login() {
       }
     } catch (err) {
       console.error('Falha ao verificar perfil:', err);
-      // Não desloga — só força o usuário a passar pelo /perfil
       perfilIncompleto = true;
     }
 
-    // ===== 4) REDIRECIONA =====
+
+    // ===== REDIRECIONAR =====
     if (bloqueado || perfilIncompleto) {
       localStorage.setItem('mindu_perfil_incompleto', 'true');
       navigate('/perfil');
@@ -126,6 +127,7 @@ export function Login() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
+                autoCapitalize="none"
                 placeholder="seu@email.com"
                 required
               />

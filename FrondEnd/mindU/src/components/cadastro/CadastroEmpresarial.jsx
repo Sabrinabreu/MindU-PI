@@ -45,6 +45,9 @@ export function CadastroEmpresarial({ onBack }) {
     if (name === 'estado') {
       finalValue = value.replace(/[^a-zA-Z]/g, '').toUpperCase().substring(0, 2); // Aceita APENAS letras, converte para MAIÚSCULO e limita a 2 caracteres
     }
+    if (name === 'email') {
+      finalValue = value.toLowerCase().trim(); // Força minúsculo e remove espaços
+    }
 
     setForm((prev) => ({ ...prev, [name]: finalValue }));
   };
@@ -150,7 +153,7 @@ export function CadastroEmpresarial({ onBack }) {
             </div>
             <div className="form-field">
               <label>E-mail *</label>
-              <input className="glass-input" type="email" name="email" value={form.email} onChange={handleChange} placeholder="contato@empresa.com.br" maxLength={100} required />
+              <input className="glass-input" type="email" name="email" value={form.email} onChange={handleChange} autoCapitalize="none" placeholder="contato@empresa.com.br" maxLength={100} required />
             </div>
             <div className="form-field">
               <label>Telefone *</label>

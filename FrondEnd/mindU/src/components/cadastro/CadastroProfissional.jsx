@@ -15,6 +15,9 @@ export function CadastroProfissional({ onBack }) {
     const { name, value } = e.target;
     let finalValue = value;
     if (name === 'nome') finalValue = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+    if (name === 'email') {
+      finalValue = value.toLowerCase().trim(); // Força minúsculo e remove espaços
+    }
     setForm((prev) => ({ ...prev, [name]: finalValue }));
   };
 
@@ -78,7 +81,7 @@ export function CadastroProfissional({ onBack }) {
 
         <div className="form-field full">
           <label htmlFor="email">E-mail profissional *</label>
-          <input id="email" className="glass-input" type="email" name="email" value={form.email} onChange={handleChange} placeholder="voce@email.com" autoComplete="email" maxLength={100} required />
+          <input id="email" className="glass-input" type="email" name="email" value={form.email} onChange={handleChange} autoCapitalize="none" placeholder="voce@email.com" autoComplete="email" maxLength={100} required />
         </div>
 
         <div className="form-field full">

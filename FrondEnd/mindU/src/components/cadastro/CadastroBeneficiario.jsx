@@ -17,6 +17,9 @@ export function CadastroBeneficiario({ onBack }) {
 
     if (name === 'nome') finalValue = value.replace(/[^a-zA-ZÀ-ÿ\s]/g, ''); 
     if (name === 'matricula') finalValue = value.toUpperCase().substring(0, 10);
+    if (name === 'email') {
+      finalValue = value.toLowerCase().trim(); // Força minúsculo e remove espaços
+    }
 
     setForm((prev) => ({ ...prev, [name]: finalValue }));
     if (name === 'matricula') setForm(prev => ({ ...prev, empresaId: '', nomeEmpresa: '' }));
@@ -90,7 +93,7 @@ export function CadastroBeneficiario({ onBack }) {
 
         <div className="form-field full">
           <label>E-mail *</label>
-          <input className="glass-input" type="email" name="email" value={form.email} onChange={handleChange} placeholder="seu@email.com" maxLength={100} required />
+          <input className="glass-input" type="email" name="email" value={form.email} onChange={handleChange} autoCapitalize="none" placeholder="seu@email.com" maxLength={100} required />
         </div>
 
         <div className="form-field full">
